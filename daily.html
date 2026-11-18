@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>每日 10 分钟跟练 · 驼背矫正方案跟练</title>
+  <style>
+:root {
+  --bg: #1c1c1e;
+  --ink: #1a1a1a;
+  --lcd: #b4c5a0;
+  --lcd-ink: #1c2416;
+  --lcd-dim: #4a5840;
+  --lcd-inv: #2a3324;
+  --lcd-inv-text: #d5e3c8;
+  --wheel: #d8d5d0;
+  --wheel-dark: #b8b4ae;
+  --center: #f4f2ee;
+  --ipod: #f3f1ec;
+  --muted: #6b6b6b;
+  --accent: #3db8a0;
+  --danger: #a33;
+  --shadow: 0 16px 40px rgba(0,0,0,.28);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: #f2f2f2;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Helvetica Neue", sans-serif;
+  font-size: 18px; line-height: 1.4; }
+body { min-height: 100vh; -webkit-text-size-adjust: 100%; overscroll-behavior: none; }
+button, a { font: inherit; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 12px 14px 8px; }
+.topbar { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; font-size: 13px; color: #aaa; }
+.progress-label { color: #e6d19a; }
+h1 { font-size: 28px; margin: 0 0 8px; }
+.sub { color: #bbb; margin: 0 0 18px; font-size: 16px; }
+.banner { display: none; background: #3a2a18; border: 1px solid #8a6a32; color: #f8e4b0;
+  border-radius: 12px; padding: 12px 14px; margin: 0 0 12px; font-size: 15px; }
+.banner.show { display: block; }
+.banner code, .how code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9em; }
+.card { background: #252528; border-radius: 16px; padding: 12px; margin-bottom: 10px; }
+.video-box { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; }
+.video-box iframe, .video-box #player { position: absolute; inset: 0; width: 100%; height: 100%; }
+.fallback { display: none; position: absolute; inset: 0; background: #111a22; color: #eee;
+  padding: 22px; align-content: center; z-index: 2; }
+.fallback.show { display: grid; gap: 12px; }
+.vid-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.btn { border: 0; border-radius: 10px; padding: 10px 14px; background: #3a3a3e; color: #eee; cursor: pointer; touch-action: manipulation; }
+.btn.ghost { background: transparent; border: 1px solid #555; }
+.btn.primary { background: #3db8a0; color: #06231e; font-weight: 700; font-size: 20px; padding: 12px 22px; }
+.btn.danger { background: #5a2e2c; color: #f3cfc9; }
+.cues { margin: 8px 0 0; padding-left: 1.15em; color: #ddd; font-size: 16px; }
+.cues li { margin: 0 0 4px; }
+.safety { margin: 10px 0 12px; color: #d7c4b8; font-size: 13px; }
+.how { background: #252528; border-radius: 14px; padding: 14px 16px; margin: 16px 0; font-size: 15px; color: #bbb; }
+.how h2 { margin: 0 0 8px; font-size: 17px; color: #fff; }
+.start, .finish, .session { display: none; }
+.start.show, .finish.show, .session.show { display: block; }
+.finish h2 { font-size: 36px; margin: 10px 0; }
+
+/* ===== iPod body ===== */
+.ipod {
+  position: sticky; bottom: 0; z-index: 8;
+  background: linear-gradient(180deg, #f7f6f2 0%, #eceae4 60%, #e4e1da 100%);
+  color: var(--ink);
+  border-radius: 28px 28px 22px 22px;
+  padding: 14px 16px 16px;
+  box-shadow: var(--shadow), inset 0 1px 0 #fff;
+  margin: 8px -2px 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ipod-screen {
+  background: linear-gradient(180deg, #9eaf8b 0%, #b7c8a4 30%, #c3d4b0 100%);
+  color: var(--lcd-ink);
+  border-radius: 8px;
+  padding: 8px 10px 10px;
+  min-height: 148px;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,.35), inset 0 0 0 3px #2c2c2c, 0 0 0 1px #6a6a6a;
+  font-family: "Lucida Grande", "Geneva", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  overflow: hidden;
+}
+.lcd-status { display: flex; justify-content: space-between; font-size: 11px; color: var(--lcd-dim); letter-spacing: .04em; margin-bottom: 2px; }
+.lcd-name { font-size: 20px; font-weight: 700; margin: 0; line-height: 1.2; }
+.lcd-dose { font-size: 12px; color: var(--lcd-dim); margin: 2px 0 4px; }
+.lcd-timer { font-variant-numeric: tabular-nums; font-size: 52px; font-weight: 700; line-height: .95; letter-spacing: -1px; }
+.lcd-timer.paused { opacity: .45; }
+.lcd-meta { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; margin-top: 4px; }
+.lcd-next { font-size: 12px; color: var(--lcd-dim); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lcd-paused { display: none; font-weight: 700; font-size: 12px; }
+.lcd-paused.show { display: inline; }
+.lcd-letter { font-size: 28px; font-weight: 800; float: right; }
+#lcdMenu { display: none; }
+#lcdMenu.show { display: block; }
+#lcdWorkout.hide { display: none; }
+.menu-title { font-size: 12px; font-weight: 700; letter-spacing: .08em; border-bottom: 1px solid var(--lcd-dim); padding-bottom: 3px; margin-bottom: 4px; }
+.menu-list { list-style: none; margin: 0; padding: 0; max-height: 118px; overflow: hidden; }
+.menu-list li { padding: 5px 8px; border-radius: 3px; font-size: 15px; display: flex; justify-content: space-between; gap: 8px; }
+.menu-list li.active { background: var(--lcd-inv); color: var(--lcd-inv-text); }
+.menu-list li.current .mark { font-size: 11px; }
+.menu-hint { font-size: 11px; color: var(--lcd-dim); margin-top: 4px; }
+
+/* Click wheel */
+.wheel-wrap { display: flex; flex-direction: column; align-items: center; margin-top: 12px; }
+.wheel {
+  position: relative;
+  width: min(280px, 78vw);
+  height: min(280px, 78vw);
+  max-width: 300px; max-height: 300px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%, #f0eeea 0%, var(--wheel) 42%, var(--wheel-dark) 72%, #9c9892 100%);
+  box-shadow:
+    inset 0 3px 6px rgba(255,255,255,.65),
+    inset 0 -4px 8px rgba(0,0,0,.18),
+    0 8px 18px rgba(0,0,0,.22);
+  touch-action: none;
+  cursor: pointer;
+}
+.wheel::after {
+  content: "";
+  position: absolute; inset: 18%;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.06);
+}
+.seg-label {
+  position: absolute; z-index: 1; pointer-events: none;
+  font-size: 12px; font-weight: 700; letter-spacing: .08em;
+  color: #555; text-transform: uppercase;
+}
+.seg-label.n { top: 14%; left: 50%; transform: translateX(-50%); }
+.seg-label.s { bottom: 13%; left: 50%; transform: translateX(-50%); font-size: 13px; letter-spacing: 0; }
+.seg-label.w { left: 10%; top: 50%; transform: translateY(-50%); font-size: 18px; }
+.seg-label.e { right: 10%; top: 50%; transform: translateY(-50%); font-size: 18px; }
+.wheel-center {
+  position: absolute; left: 50%; top: 50%;
+  width: 38%; height: 38%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 0;
+  background: linear-gradient(180deg, #ffffff 0%, var(--center) 45%, #e4e0d8 100%);
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.2),
+    inset 0 2px 3px #fff,
+    inset 0 -2px 3px rgba(0,0,0,.1);
+  z-index: 2;
+  display: grid; place-items: center;
+  color: #333;
+  pointer-events: none;
+}
+.wheel-center .icon { font-size: 22px; line-height: 1; }
+.wheel-center .cap { font-size: 10px; font-weight: 700; color: #666; margin-top: 1px; }
+.wheel.press-center .wheel-center { background: linear-gradient(180deg, #e8e6e1 0%, #dcd9d3 100%); }
+.wheel-hint { text-align: center; font-size: 12px; color: #666; margin: 8px 0 0; }
+
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.62); z-index: 40;
+  align-items: center; justify-content: center; padding: 24px; }
+.modal.show { display: flex; }
+.modal .sheet { background: var(--ipod); color: var(--ink); max-width: 420px; width: 100%;
+  border-radius: 16px; padding: 18px; }
+.modal h2 { margin: 0 0 10px; font-size: 22px; }
+.modal p { margin: 0 0 16px; color: #444; }
+.modal .btn { color: #eee; }
+.modal .btn.ghost { color: #222; border-color: #bbb; }
+
+@media (min-width: 860px) {
+  .wrap { max-width: 1100px; }
+  .session-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; align-items: start; }
+  .ipod { position: relative; margin: 0; }
+  .wheel { width: 300px; height: 300px; }
+}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div>驼背矫正方案 · 跟练</div>
+      <div class="progress-label" id="progressLabel"></div>
+    </div>
+
+    <div id="fileBanner" class="banner">
+      你现在是用本地文件打开本页（file://）。YouTube 内嵌视频在这种情况下常常无法播放（错误 153）。
+      示范视频可以用「在 YouTube 打开示范」按钮另开标签页观看；本页的计时、计数、语音提示仍可照常使用。
+      若希望视频嵌在页面里播放，请在该文件夹运行
+      <code>python3 -m http.server 8000</code>，再用浏览器打开
+      <code>http://localhost:8000/跟练-每日10分钟.html</code>。
+    </div>
+    <div id="apiBanner" class="banner">无法加载 YouTube 播放器脚本。请检查网络，或使用「在 YouTube 打开示范」。</div>
+
+    <section id="start" class="start">
+      <h1>每日 10 分钟跟练</h1>
+      <p class="sub">第 1 周每日活动：下巴回收、墙壁天使、门框扩胸拉伸、胸椎伸展、猫牛式。示范为已核对的真人教学视频。</p>
+      <button class="btn primary" id="startBtn" type="button">开始跟练</button>
+      <div class="how">
+        <h2>怎么用（iPod 圆盘）</h2>
+        <p>中间圆钮：暂停 / 继续（计时和视频都会停在原地）。下方「完成一次」：只记当前这一次或这一侧。左边上一动作，右边下一动作（要先确认才跳过）。上方 MENU 打开动作列表；用手指在圆环上转一圈可以滚动列表，再按中间圆钮才会跳转，单转转盘不会跳过动作。</p>
+        <p>请用 Safari 或 Chrome 打开。Obsidian 不能直接播放这个网页。</p>
+      </div>
+      <p class="safety">出现手臂发麻、刺痛、疼痛往手臂或腿放射，或锐痛 / 剧痛，请先停止并就医评估。本页为一般性运动指导，不构成诊断或用药建议。示范为已核对的公开 YouTube 视频，不是 AI 生成动作。</p>
+    </section>
+
+    <section id="session" class="session">
+      <div class="session-grid">
+        <div>
+          <div class="card">
+            <div class="video-box">
+              <div id="player"></div>
+              <div id="fallback" class="fallback">
+                <div id="fallbackReason">当前无法内嵌播放示范视频。</div>
+                <a id="fallbackLink" class="btn primary" target="_blank" rel="noopener noreferrer">在 YouTube 打开示范</a>
+              </div>
+            </div>
+            <div class="vid-actions">
+              <a class="btn ghost" id="openYtBtn" target="_blank" rel="noopener noreferrer">在 YouTube 打开示范</a>
+              <button class="btn ghost" id="muteBtn" type="button">示范静音</button>
+            </div>
+            <ul class="cues" id="cues"></ul>
+          </div>
+        </div>
+
+        <div class="ipod" id="ipod">
+          <div class="ipod-screen" id="ipodScreen">
+            <div id="lcdWorkout">
+              <div class="lcd-status">
+                <span id="lcdMode">训练</span>
+                <span class="lcd-paused" id="lcdPaused">已暂停</span>
+                <span id="lcdClock"></span>
+              </div>
+              <div class="lcd-letter" id="lcdLetter" style="display:none"></div>
+              <h2 class="lcd-name" id="lcdName"></h2>
+              <div class="lcd-dose" id="lcdDose"></div>
+              <div class="lcd-timer" id="lcdTimer">0</div>
+              <div class="lcd-meta" id="lcdMeta"></div>
+              <div class="lcd-next" id="lcdNext"></div>
+            </div>
+            <div id="lcdMenu">
+              <div class="menu-title">MENU · 选择动作</div>
+              <ul class="menu-list" id="menuList"></ul>
+              <div class="menu-hint">转动圆盘选择，按中间钮确认。转盘本身不会跳过。</div>
+            </div>
+          </div>
+          <div class="wheel-wrap">
+            <div class="wheel" id="wheel" role="group" aria-label="iPod 式控制圆盘">
+              <span class="seg-label n">MENU</span>
+              <span class="seg-label w">⏮</span>
+              <span class="seg-label e">⏭</span>
+              <span class="seg-label s">完成一次</span>
+              <div class="wheel-center" id="centerBtn">
+                <div>
+                  <div class="icon" id="centerIcon">❚❚</div>
+                  <div class="cap" id="centerCap">暂停</div>
+                </div>
+              </div>
+            </div>
+            <p class="wheel-hint">中间：暂停 / 继续　下方：记一次　左右：上一项 / 下一项（需确认）　上：菜单</p>
+          </div>
+        </div>
+      </div>
+      <p class="safety">出现麻木、刺痛、放射痛或剧痛，请停止并就医。不构成诊断或用药建议。</p>
+    </section>
+
+    <section id="finish" class="finish">
+      <h2>完成，辛苦了</h2>
+      <p class="sub">这套跟练已经结束。可在日记或对话里打卡。若过程中有不适，先停下来，需要时去看医生。</p>
+      <button class="btn primary" id="againBtn" type="button">再练一次</button>
+    </section>
+  </div>
+
+  <div class="modal" id="skipModal" aria-hidden="true">
+    <div class="sheet">
+      <h2>请确认</h2>
+      <p id="skipModalText">确定吗？</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn ghost" id="skipCancelBtn" type="button">取消</button>
+        <button class="btn danger" id="skipConfirmBtn" type="button">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.ROUTINE = {
+  "title": "每日 10 分钟跟练",
+  "welcome": "每日十分钟训练，现在开始。",
+  "restSec": 60,
+  "exercises": [
+    {
+      "id": "chin",
+      "name": "下巴回收",
+      "doseLabel": "2 组 × 10 次，每次停留 5 秒",
+      "kind": "reps",
+      "sets": 2,
+      "reps": 10,
+      "tempo": 5,
+      "holdHint": 5,
+      "videoId": "Qd_10T41EuI",
+      "start": 0,
+      "end": 50,
+      "channel": "运动医学SportsMedicine（吴易澄医师）",
+      "videoTitle": "下巴回收 Chin Tuck｜颈部疼痛居家复健",
+      "cues": [
+        "眼睛平视前方，下巴水平向后收入喉咙，做出浅浅的“双下巴”，不要低头。",
+        "后脑轻贴墙，不要仰头去凑墙。",
+        "保持呼吸，每次停留约 5 秒再放松。"
+      ]
+    },
+    {
+      "id": "wall",
+      "name": "墙壁天使",
+      "doseLabel": "2 组 × 10 次",
+      "kind": "reps",
+      "sets": 2,
+      "reps": 10,
+      "tempo": 5,
+      "videoId": "m4YnNsmUiH0",
+      "start": 0,
+      "end": 53,
+      "channel": "运动医学SportsMedicine（吴易澄医师）",
+      "videoTitle": "墙面天使 Wall Angel｜颈部疼痛居家复健",
+      "cues": [
+        "臀部、肩胛、后脑尽量贴墙，下腰不要大力反弓。",
+        "前臂和手背尽量贴墙缓慢上下滑，优先贴墙而不是强求高度。",
+        "上滑时肩膀远离耳朵，不要耸肩。"
+      ]
+    },
+    {
+      "id": "door",
+      "name": "门框扩胸拉伸",
+      "doseLabel": "2 组，每边各 30 秒",
+      "kind": "sides",
+      "sets": 2,
+      "hold": 30,
+      "sides": [
+        "左侧",
+        "右侧"
+      ],
+      "videoId": "aPj8VpYu0i4",
+      "start": 0,
+      "end": 54,
+      "channel": "运动医学SportsMedicine（吴易澄医师）",
+      "videoTitle": "门框胸肌伸展 Doorway Pec Stretch｜钙化性肌腱炎居家复健",
+      "cues": [
+        "前臂贴门框，肘约与肩同高，身体缓慢前送、挺胸。",
+        "腹部轻收，不要肋骨外翻；肩下沉，不要耸肩。",
+        "只求舒适牵拉。若手臂发麻，立即减小幅度。"
+      ]
+    },
+    {
+      "id": "thoracic",
+      "name": "胸椎伸展",
+      "doseLabel": "约 1 分钟（椅背或泡沫轴）",
+      "kind": "hold",
+      "sets": 1,
+      "hold": 60,
+      "videoId": "1_1oxn7uE8I",
+      "start": 0,
+      "end": 51,
+      "channel": "运动医学SportsMedicine（吴易澄医师）",
+      "videoTitle": "胸椎伸展 Thoracic Extension｜上背圆肩居家复健",
+      "cues": [
+        "支点放在上背（肩胛下缘附近），绝不要放在腰上。",
+        "双手轻托后脑保护颈椎，不要把头往后甩。",
+        "呼气时胸口向上打开，下腰不要拼命塌。"
+      ]
+    },
+    {
+      "id": "catcow",
+      "name": "猫牛式",
+      "doseLabel": "10 次（一次 = 猫式 + 牛式）",
+      "kind": "reps",
+      "sets": 1,
+      "reps": 10,
+      "tempo": 6,
+      "videoId": "hQJwBEOhE0I",
+      "start": 0,
+      "end": 58,
+      "channel": "运动医学SportsMedicine（吴易澄医师）",
+      "videoTitle": "猫牛式 Cat-Cow｜下背痛居家复健",
+      "cues": [
+        "手腕在肩下、膝盖在髋下，随呼吸缓慢屈伸。",
+        "头轻轻跟随胸椎，不要猛抬头或猛低头。",
+        "只走到舒适范围，肩膀远离耳朵。"
+      ]
+    }
+  ]
+};
+  </script>
+  <script>
+
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const routine = window.ROUTINE;
+  const restSec = routine.restSec || 60;
+  let idx = 0, setN = 1, repN = 0, letterIdx = 0, sideIdx = 0;
+  let mode = "idle";
+  let remaining = 0, ticking = false, lastTs = 0;
+  let player = null, ytReady = false, embedFailed = false, muted = false;
+  let currentClip = null;
+  let clock = null;
+  let actionLockUntil = 0;
+  let confirmFn = null;
+  let menuOpen = false;
+  let menuHi = 0;
+
+  function now() { return performance.now(); }
+  function locked() { return now() < actionLockUntil; }
+  function lock(ms) { actionLockUntil = now() + (ms || 350); }
+
+  function fmt(sec) {
+    sec = Math.max(0, Math.ceil(sec - 0.0001));
+    const m = Math.floor(sec / 60), s = sec % 60;
+    return m > 0 ? (String(m) + ":" + String(s).padStart(2, "0")) : String(s);
+  }
+  function audioCtx() {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    const ctx = audioCtx.ctx || (audioCtx.ctx = new Ctx());
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function tone(freq, dur, gain) {
+    try {
+      const ctx = audioCtx(); if (!ctx) return;
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "square"; o.frequency.value = freq || 880;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(gain || 0.1, ctx.currentTime + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + (dur || 0.08));
+      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + (dur || 0.1));
+    } catch (e) {}
+  }
+  function beep(freq, dur) { tone(freq, dur, 0.12); }
+  function clickTick() {
+    tone(1900, 0.028, 0.09);
+    try { if (navigator.vibrate) navigator.vibrate(8); } catch (e) {}
+  }
+  function speak(text) {
+    try {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "zh-CN"; u.rate = 1; u.pitch = 1;
+      const voices = window.speechSynthesis.getVoices() || [];
+      const zh = voices.find(v => /zh-CN|zh_CN|Chinese.*China|汉语|普通话/i.test(v.lang + v.name));
+      if (zh) u.voice = zh;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+  function announce(text) { beep(880, 0.16); speak(text); }
+
+  function isFileOrigin() {
+    return location.protocol === "file:" || location.origin === "null" || location.origin === "file://";
+  }
+  function ytWatchUrl(ex) {
+    const t = (ex && ex.start) || 0;
+    return "https://www.youtube.com/watch?v=" + ex.videoId + (t ? ("&t=" + t + "s") : "");
+  }
+  function showFileBanner() {
+    const b = $("fileBanner");
+    if (b && isFileOrigin()) b.classList.add("show");
+  }
+  function showFallback(ex, reason) {
+    embedFailed = true;
+    const box = $("fallback");
+    if (!box) return;
+    box.classList.add("show");
+    $("fallbackReason").textContent = reason || "当前环境无法内嵌播放 YouTube 视频。";
+    if ($("fallbackLink") && ex) $("fallbackLink").href = ytWatchUrl(ex);
+    if ($("openYtBtn") && ex) $("openYtBtn").href = ytWatchUrl(ex);
+  }
+
+  window.onYouTubeIframeAPIReady = function () {
+    ytReady = true;
+    if (mode !== "idle" && currentClip && !player) createPlayer(currentClip);
+  };
+
+  function syncVideoPlay() {
+    if (!player) return;
+    try {
+      if (!ticking || mode !== "work") {
+        if (typeof player.pauseVideo === "function") player.pauseVideo();
+      } else if (typeof player.playVideo === "function") {
+        if (muted && typeof player.mute === "function") player.mute();
+        player.playVideo();
+      }
+    } catch (e) {}
+  }
+  function loopClip(ex) {
+    if (!ticking || mode !== "work") return;
+    if (!player || typeof player.seekTo !== "function") return;
+    try {
+      player.seekTo((ex && ex.start) || 0, true);
+      if (ticking && mode === "work") player.playVideo();
+    } catch (e) {}
+  }
+  function createPlayer(ex) {
+    currentClip = ex;
+    const host = $("player");
+    if (!host || !ex) return;
+    if ($("fallback")) $("fallback").classList.remove("show");
+    embedFailed = false;
+    if ($("openYtBtn")) $("openYtBtn").href = ytWatchUrl(ex);
+    const start = ex.start || 0;
+    const end = ex.end || undefined;
+    if (player && typeof player.loadVideoById === "function") {
+      try {
+        const payload = { videoId: ex.videoId, startSeconds: start };
+        if (end) payload.endSeconds = end;
+        player.loadVideoById(payload);
+        if (muted && typeof player.mute === "function") player.mute();
+        syncVideoPlay();
+        return;
+      } catch (e) {}
+    }
+    const origin = (location.origin && location.origin !== "null") ? location.origin : undefined;
+    const vars = {
+      autoplay: 0, controls: 1, rel: 0, modestbranding: 1, playsinline: 1, disablekb: 1, fs: 1,
+      start: start, mute: muted ? 1 : 0
+    };
+    if (end) vars.end = end;
+    if (origin && origin.indexOf("http") === 0) vars.origin = origin;
+    if (!(window.YT && YT.Player)) {
+      if (isFileOrigin()) showFallback(ex, "用文件方式打开时，YouTube 内嵌播放常常失败。计时仍会继续，可用按钮打开示范。");
+      return;
+    }
+    try {
+      player = new YT.Player("player", {
+        videoId: ex.videoId, width: "100%", height: "100%", playerVars: vars, host: "https://www.youtube.com",
+        events: {
+          onReady: function (e) {
+            try {
+              if (muted) e.target.mute(); else e.target.unMute();
+              e.target.seekTo(start, true);
+              syncVideoPlay();
+            } catch (err) {}
+          },
+          onError: function (e) {
+            const code = e && e.data;
+            const map = { 2: "视频参数无效", 5: "HTML5 播放器错误", 100: "视频不存在或已删除", 101: "该视频不允许嵌入播放", 150: "该视频不允许嵌入播放", 153: "嵌入被拒绝（常见于用文件方式打开页面）" };
+            showFallback(ex, "YouTube 错误 " + code + "：" + (map[code] || "无法内嵌播放") + "。计时会继续，请点按钮在 YouTube 打开示范。");
+          },
+          onStateChange: function (e) {
+            if (window.YT && e.data === YT.PlayerState.ENDED) loopClip(ex);
+          }
+        }
+      });
+    } catch (err) {
+      showFallback(ex, "无法创建播放器。计时会继续，请在新标签打开示范视频。");
+    }
+  }
+  function watchLoop() {
+    try {
+      if (player && currentClip && ticking && mode === "work" && typeof player.getCurrentTime === "function") {
+        const t = player.getCurrentTime();
+        if (currentClip.end && t >= currentClip.end - 0.35) loopClip(currentClip);
+      }
+    } catch (e) {}
+    setTimeout(watchLoop, 500);
+  }
+  watchLoop();
+
+  function ex() { return routine.exercises[idx]; }
+  function nextEx() { return routine.exercises[idx + 1] || null; }
+  function sidesOf(item) { return item.sides || ["左侧", "右侧"]; }
+  function lettersOf(item) { return item.letters || ["Y", "T", "W"]; }
+  function workDuration(item) {
+    if (item.kind === "hold" || item.kind === "sides") return item.hold;
+    return item.tempo || 5;
+  }
+
+  function ensureClock() {
+    if (clock != null) return;
+    lastTs = now();
+    clock = setInterval(onClock, 100);
+  }
+  function stopClock() {
+    if (clock != null) { clearInterval(clock); clock = null; }
+  }
+  function onClock() {
+    if (!ticking || mode === "idle" || mode === "done") { lastTs = now(); return; }
+    const ts = now();
+    let dt = (ts - lastTs) / 1000;
+    lastTs = ts;
+    if (dt < 0) dt = 0;
+    if (dt > 0.25) dt = 0.25;
+    remaining -= dt;
+    if (remaining <= 0) {
+      remaining = 0;
+      render();
+      ticking = false;
+      try {
+        if (mode === "work") advanceAfterWorkUnit();
+        else if (mode === "rest") startWorkAfterRest();
+      } catch (e) {
+        ticking = true;
+        lastTs = now();
+      }
+    } else {
+      renderTimer();
+    }
+  }
+
+  function startWork() {
+    const item = ex();
+    mode = "work";
+    ticking = true;
+    lastTs = now();
+    remaining = workDuration(item);
+    if ((item.kind === "reps" || item.kind === "ytw") && repN === 0) repN = 1;
+    ensureClock();
+    syncVideoPlay();
+    render();
+  }
+  function startRest(say) {
+    mode = "rest";
+    ticking = true;
+    lastTs = now();
+    remaining = restSec;
+    ensureClock();
+    syncVideoPlay();
+    if (say) announce(say);
+    else announce("休息" + restSec + "秒");
+    render();
+  }
+  function beginExercise(i, fromRest) {
+    idx = i;
+    const item = ex();
+    setN = 1; repN = item.kind === "hold" ? 0 : 1; letterIdx = 0; sideIdx = 0;
+    currentClip = item;
+    try {
+      if (ytReady) createPlayer(item);
+      else if (isFileOrigin()) showFallback(item, "用文件方式打开时，YouTube 内嵌播放常常失败。计时仍会继续。");
+    } catch (e) {
+      showFallback(item, "示范视频无法加载，计时会继续。");
+    }
+    announce(fromRest ? ("下一个动作，" + item.name + "，开始") : (item.name + "，开始"));
+    startWork();
+  }
+  function finishRoutine() {
+    mode = "done"; ticking = false;
+    stopClock();
+    closeMenu();
+    syncVideoPlay();
+    announce("训练完成，做得好");
+    $("session").classList.remove("show");
+    $("finish").classList.add("show");
+  }
+  function advanceAfterWorkUnit() {
+    const item = ex();
+    if (!item) { finishRoutine(); return; }
+    beep(660, 0.1);
+    if (item.kind === "hold") {
+      if (setN < item.sets) { setN += 1; startRest("第" + (setN - 1) + "组完成，休息" + restSec + "秒"); return; }
+      return goNextExercise();
+    }
+    if (item.kind === "sides") {
+      const sides = sidesOf(item);
+      if (sideIdx < sides.length - 1) { sideIdx += 1; announce("换到" + sides[sideIdx]); startWork(); return; }
+      if (setN < item.sets) { setN += 1; sideIdx = 0; startRest("第" + (setN - 1) + "组完成，休息" + restSec + "秒"); return; }
+      return goNextExercise();
+    }
+    if (item.kind === "reps") {
+      if (repN < item.reps) { repN += 1; startWork(); return; }
+      if (setN < item.sets) { setN += 1; repN = 1; startRest("第" + (setN - 1) + "组完成，休息" + restSec + "秒"); return; }
+      return goNextExercise();
+    }
+    if (item.kind === "ytw") {
+      const letters = lettersOf(item);
+      if (repN < item.reps) { repN += 1; startWork(); return; }
+      if (letterIdx < letters.length - 1) { letterIdx += 1; repN = 1; announce(letters[letterIdx] + "字"); startWork(); return; }
+      if (setN < item.sets) { setN += 1; letterIdx = 0; repN = 1; startRest("第" + (setN - 1) + "组完成，休息" + restSec + "秒"); return; }
+      return goNextExercise();
+    }
+  }
+  function goNextExercise() {
+    if (idx >= routine.exercises.length - 1) { finishRoutine(); return; }
+    beginExercise(idx + 1, true);
+  }
+  function goPrevExercise() {
+    if (locked()) return;
+    lock(400);
+    hideConfirm();
+    if (idx <= 0 && setN === 1 && (repN <= 1)) { beginExercise(0, false); return; }
+    if (setN > 1 || repN > 1 || sideIdx > 0 || letterIdx > 0) { beginExercise(idx, false); return; }
+    beginExercise(Math.max(0, idx - 1), false);
+  }
+
+  function hideConfirm() {
+    confirmFn = null;
+    $("skipModal").classList.remove("show");
+  }
+  function askConfirm(text, fn) {
+    confirmFn = fn;
+    $("skipModalText").textContent = text;
+    $("skipModal").classList.add("show");
+  }
+  function requestSkip() {
+    if (mode === "idle" || mode === "done") return;
+    // Showing the confirm sheet must not be blocked by the complete-unit debounce.
+    const item = ex();
+    const msg = (mode === "rest")
+      ? "确定结束休息，进入下一组？"
+      : ("确定跳过「" + (item && item.name || "当前动作") + "」，进入下一动作？");
+    askConfirm(msg, function () {
+      if (mode === "rest") { announce("休息结束"); startWorkAfterRest(); }
+      else if (mode === "work") { announce("跳过当前动作"); goNextExercise(); }
+    });
+  }
+  function confirmYes() {
+    const fn = confirmFn;
+    hideConfirm();
+    if (fn) { lock(400); fn(); }
+  }
+  function startWorkAfterRest() {
+    const item = ex();
+    if (item && item.kind === "sides") sideIdx = 0;
+    announce("第" + setN + "组，开始");
+    startWork();
+  }
+  function completeUnit() {
+    if (locked()) return;
+    if (menuOpen) return; // rotation/menu must not count a rep
+    if (mode !== "work") return;
+    lock(350);
+    remaining = 0;
+    ticking = false;
+    advanceAfterWorkUnit();
+  }
+  function setPaused(paused) {
+    if (mode !== "work" && mode !== "rest") return;
+    ticking = !paused;
+    lastTs = now();
+    if (paused) {
+      try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+    }
+    syncVideoPlay();
+    ensureClock();
+    render();
+  }
+  function togglePause() {
+    if (mode !== "work" && mode !== "rest") return;
+    actionLockUntil = 0;
+    setPaused(ticking);
+  }
+
+  function openMenu() {
+    menuOpen = true;
+    menuHi = idx;
+    render();
+  }
+  function closeMenu() {
+    menuOpen = false;
+    render();
+  }
+  function toggleMenu() {
+    if (mode === "idle" || mode === "done") return;
+    if (menuOpen) closeMenu(); else openMenu();
+    clickTick();
+  }
+  function moveMenu(delta) {
+    if (!menuOpen) openMenu();
+    const n = routine.exercises.length;
+    menuHi = (menuHi + delta + n * 8) % n;
+    clickTick();
+    renderMenu();
+  }
+  function selectMenu() {
+    if (!menuOpen) return;
+    const target = menuHi;
+    if (target === idx) { closeMenu(); return; }
+    const name = routine.exercises[target].name;
+    askConfirm("确定跳到「" + name + "」重新开始该动作？", function () {
+      closeMenu();
+      beginExercise(target, true);
+    });
+  }
+
+  function renderTimer() {
+    const t = $("lcdTimer");
+    if (!t) return;
+    t.textContent = fmt(remaining);
+    t.className = "lcd-timer" + (!ticking && (mode === "work" || mode === "rest") ? " paused" : "");
+    if ($("lcdClock")) $("lcdClock").textContent = fmt(remaining);
+  }
+  function renderMenu() {
+    const ul = $("menuList");
+    if (!ul) return;
+    ul.innerHTML = "";
+    routine.exercises.forEach((item, i) => {
+      const li = document.createElement("li");
+      if (i === menuHi) li.classList.add("active");
+      if (i === idx) li.classList.add("current");
+      li.innerHTML = "<span>" + item.name + "</span>" + (i === idx ? "<span class=\"mark\">正在练</span>" : "");
+      ul.appendChild(li);
+    });
+    const active = ul.querySelector("li.active");
+    if (active && typeof active.scrollIntoView === "function") {
+      active.scrollIntoView({ block: "nearest" });
+    }
+  }
+  function render() {
+    const item = ex();
+    $("lcdMenu").classList.toggle("show", menuOpen);
+    $("lcdWorkout").classList.toggle("hide", menuOpen);
+    if (menuOpen) renderMenu();
+    if (!item && mode !== "done") return;
+
+    $("progressLabel").textContent = item ? ("动作 " + (idx + 1) + " / " + routine.exercises.length) : "";
+    $("lcdName").textContent = item ? item.name : "";
+    $("lcdDose").textContent = item ? item.doseLabel : "";
+    const letterBox = $("lcdLetter");
+    if (item && item.kind === "ytw") { letterBox.style.display = "block"; letterBox.textContent = lettersOf(item)[letterIdx]; }
+    else { letterBox.style.display = "none"; }
+
+    const bits = [];
+    if (item) {
+      bits.push("组 " + setN + "/" + item.sets);
+      if (item.kind === "reps" || item.kind === "ytw") bits.push("次 " + repN + "/" + item.reps);
+      if (item.kind === "sides") bits.push(sidesOf(item)[sideIdx]);
+      if (item.kind === "ytw") bits.push(lettersOf(item)[letterIdx] + " 字");
+    }
+    $("lcdMeta").textContent = bits.join("  ·  ");
+
+    const n = nextEx();
+    let nextText = "这是最后一个动作";
+    if (mode === "work" || mode === "rest") {
+      if (item && item.kind === "sides" && sideIdx < sidesOf(item).length - 1) nextText = "接下来：" + sidesOf(item)[sideIdx + 1];
+      else if (item && item.kind === "ytw" && repN >= item.reps && letterIdx < lettersOf(item).length - 1) nextText = "接下来：" + lettersOf(item)[letterIdx + 1] + " 字";
+      else if (item && (item.kind === "reps" || item.kind === "ytw") && repN < item.reps) nextText = "下一次：" + (repN + 1) + " / " + item.reps;
+      else if (item && setN < item.sets) nextText = "接下来：第 " + (setN + 1) + " 组（休息 " + restSec + " 秒）";
+      else if (n) nextText = "下一个动作：" + n.name;
+    }
+    $("lcdNext").textContent = nextText;
+
+    renderTimer();
+    const paused = !ticking && (mode === "work" || mode === "rest");
+    $("lcdPaused").classList.toggle("show", paused);
+    $("lcdMode").textContent = menuOpen ? "菜单" : (mode === "rest" ? "休息" : "训练");
+    const cap = $("centerCap");
+    const icon = $("centerIcon");
+    if (menuOpen) { icon.textContent = "●"; cap.textContent = "选择"; }
+    else if (paused) { icon.textContent = "▶"; cap.textContent = "继续"; }
+    else { icon.textContent = "❚❚"; cap.textContent = "暂停"; }
+
+    const cues = $("cues");
+    cues.innerHTML = "";
+    (item && item.cues || []).forEach(c => {
+      const li = document.createElement("li"); li.textContent = c; cues.appendChild(li);
+    });
+    if ($("openYtBtn") && item) $("openYtBtn").href = ytWatchUrl(item);
+    $("muteBtn").textContent = muted ? "取消静音" : "示范静音";
+  }
+
+  function startSession() {
+    hideConfirm();
+    closeMenu();
+    $("start").classList.remove("show");
+    $("finish").classList.remove("show");
+    $("session").classList.add("show");
+    idx = 0; setN = 1; repN = 1; letterIdx = 0; sideIdx = 0;
+    ticking = false; remaining = 0; mode = "work";
+    stopClock();
+    lastTs = now();
+    try { if (window.speechSynthesis) window.speechSynthesis.getVoices(); } catch (e) {}
+    announce(routine.welcome);
+    beginExercise(0, false);
+  }
+  function toggleMute() {
+    muted = !muted;
+    if (player) { try { if (muted) player.mute(); else player.unMute(); } catch (e) {} }
+    render();
+  }
+
+  function bindTap(el, fn) {
+    if (!el) return;
+    el.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); fn(e); });
+  }
+  bindTap($("startBtn"), startSession);
+  bindTap($("againBtn"), function () {
+    hideConfirm(); stopClock(); ticking = false; mode = "idle"; closeMenu();
+    $("finish").classList.remove("show"); $("start").classList.add("show");
+  });
+  bindTap($("muteBtn"), toggleMute);
+  bindTap($("skipConfirmBtn"), confirmYes);
+  bindTap($("skipCancelBtn"), hideConfirm);
+
+  function wheelGeom(el, ev) {
+    const r = el.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const dx = ev.clientX - cx, dy = ev.clientY - cy;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const rad = r.width / 2;
+    const ang = Math.atan2(dx, -dy); // 0 at top, clockwise positive, -PI..PI
+    return { cx, cy, dx, dy, dist, rad, ang };
+  }
+  function segFromAng(ang) {
+    const d = (ang * 180 / Math.PI + 360) % 360;
+    if (d >= 315 || d < 45) return "menu";
+    if (d >= 45 && d < 135) return "next";
+    if (d >= 135 && d < 225) return "count";
+    return "prev";
+  }
+  function handleSeg(seg) {
+    if (mode === "idle" || mode === "done") return;
+    if (seg === "menu") toggleMenu();
+    else if (seg === "prev") {
+      if (menuOpen) moveMenu(-1);
+      else goPrevExercise();
+    } else if (seg === "next") {
+      if (menuOpen) moveMenu(1);
+      else requestSkip();
+    } else if (seg === "count") {
+      if (!menuOpen) completeUnit();
+    }
+  }
+  function handleCenter() {
+    if (mode === "idle" || mode === "done") return;
+    if (menuOpen) selectMenu();
+    else togglePause();
+  }
+
+  // Click-wheel pointer handling: taps vs rotational scroll
+  const wheel = $("wheel");
+  let g = null;
+  function onWheelDown(ev) {
+    if (ev.button != null && ev.button !== 0) return;
+    ev.preventDefault();
+    const geo = wheelGeom(wheel, ev);
+    g = {
+      id: ev.pointerId, last: geo.ang, acc: 0, px: ev.clientX, py: ev.clientY,
+      dist: geo.dist, rad: geo.rad, rotated: false, center: geo.dist <= geo.rad * 0.38
+    };
+    try { wheel.setPointerCapture(ev.pointerId); } catch (e) {}
+    if (g.center) wheel.classList.add("press-center");
+  }
+  function onWheelMove(ev) {
+    if (!g || ev.pointerId !== g.id) return;
+    ev.preventDefault();
+    const geo = wheelGeom(wheel, ev);
+    let d = geo.ang - g.last;
+    if (d > Math.PI) d -= Math.PI * 2;
+    if (d < -Math.PI) d += Math.PI * 2;
+    g.last = geo.ang;
+    const travel = Math.hypot(ev.clientX - g.px, ev.clientY - g.py);
+    if (g.center) return; // rotation starts on the ring, not the center
+    g.acc += d;
+    const step = 18 * Math.PI / 180;
+    if (Math.abs(g.acc) >= step || travel > 16) {
+      g.rotated = true;
+      while (g.acc >= step) { g.acc -= step; moveMenu(1); }
+      while (g.acc <= -step) { g.acc += step; moveMenu(-1); }
+    }
+  }
+  function onWheelUp(ev) {
+    if (!g || ev.pointerId !== g.id) return;
+    ev.preventDefault();
+    wheel.classList.remove("press-center");
+    const was = g;
+    g = null;
+    try { wheel.releasePointerCapture(ev.pointerId); } catch (e) {}
+    if (was.rotated) return; // rotation never skips / never counts
+    const geo = wheelGeom(wheel, ev);
+    if (was.center && geo.dist <= was.rad * 0.45) handleCenter();
+    else if (!was.center && geo.dist > was.rad * 0.22 && geo.dist <= was.rad * 1.05) handleSeg(segFromAng(geo.ang));
+  }
+  ["pointerdown", "pointermove", "pointerup", "pointercancel"].forEach((type, i) => {
+    wheel.addEventListener(type, [onWheelDown, onWheelMove, onWheelUp, onWheelUp][i], { passive: false });
+  });
+  wheel.addEventListener("touchmove", function (e) { e.preventDefault(); }, { passive: false });
+  wheel.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+  // Block page zoom/scroll starting on the iPod chrome
+  $("ipod").addEventListener("touchmove", function (e) {
+    if (e.target && e.target.closest && e.target.closest(".wheel")) e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener("keydown", function (e) {
+    if (mode === "idle") return;
+    const tag = (e.target && e.target.tagName) || "";
+    if (tag === "BUTTON" || tag === "A" || tag === "INPUT") {
+      if (e.code === "Space") {
+        e.preventDefault();
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+        if ($("skipModal").classList.contains("show")) return;
+        if (menuOpen) selectMenu();
+        else if (mode === "work") completeUnit();
+      }
+      return;
+    }
+    if (e.code === "Space") {
+      e.preventDefault();
+      if ($("skipModal").classList.contains("show")) return;
+      if (menuOpen) selectMenu();
+      else if (mode === "work") completeUnit();
+    } else if (e.key === "p" || e.key === "P") { e.preventDefault(); if (!menuOpen) togglePause(); }
+    else if (e.key === "Escape") { hideConfirm(); if (menuOpen) closeMenu(); }
+  });
+  document.addEventListener("visibilitychange", function () {
+    lastTs = now();
+    if (!document.hidden && (mode === "work" || mode === "rest")) ensureClock();
+  });
+  window.addEventListener("pageshow", function () {
+    lastTs = now();
+    if (mode === "work" || mode === "rest") ensureClock();
+  });
+
+  $("start").classList.add("show");
+  showFileBanner();
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  tag.onerror = function () { $("apiBanner").classList.add("show"); };
+  document.head.appendChild(tag);
+
+  window.__trainer = {
+    get: function () {
+      const item = ex();
+      return {
+        mode: mode, idx: idx, name: item && item.name, setN: setN, repN: repN,
+        letterIdx: letterIdx, sideIdx: sideIdx, remaining: remaining, ticking: ticking,
+        clockOn: clock != null, embedFailed: embedFailed, menuOpen: menuOpen, menuHi: menuHi
+      };
+    },
+    setRemaining: function (s) { remaining = s; renderTimer(); },
+    pause: function () { setPaused(true); },
+    resume: function () { setPaused(false); },
+    completeUnit: completeUnit,
+    forceCompleteUnit: function () { actionLockUntil = 0; completeUnit(); },
+    endPhase: function () {
+      actionLockUntil = 0;
+      if (mode !== "work" && mode !== "rest") return;
+      remaining = 0; ticking = false;
+      if (mode === "work") advanceAfterWorkUnit();
+      else startWorkAfterRest();
+    },
+    confirmSkip: function () { confirmFn = function () {
+      if (mode === "rest") { announce("休息结束"); startWorkAfterRest(); }
+      else if (mode === "work") { announce("跳过当前动作"); goNextExercise(); }
+    }; confirmYes(); },
+    requestSkip: requestSkip,
+    start: startSession,
+    openMenu: openMenu,
+    closeMenu: closeMenu,
+    moveMenu: moveMenu,
+    selectMenu: selectMenu,
+    toggleMenu: toggleMenu,
+    handleSeg: handleSeg,
+    handleCenter: handleCenter
+  };
+})();
+
+  </script>
+</body>
+</html>
