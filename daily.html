@@ -38,12 +38,20 @@ h1 { font-size: 28px; margin: 0 0 8px; }
 .banner.show { display: block; }
 .banner code, .how code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9em; }
 .card { background: #252528; border-radius: 16px; padding: 12px; margin-bottom: 10px; }
-.video-box { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; }
-.video-box iframe, .video-box #player { position: absolute; inset: 0; width: 100%; height: 100%; }
-.fallback { display: none; position: absolute; inset: 0; background: #111a22; color: #eee;
-  padding: 22px; align-content: center; z-index: 2; }
-.fallback.show { display: grid; gap: 12px; }
-.vid-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.stage { position: relative; width: 100%; aspect-ratio: 4/3; max-height: 46vh; background: #15171c; border-radius: 12px; overflow: hidden; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.stage-cap { position: absolute; left: 10px; right: 10px; bottom: 8px; z-index: 2; pointer-events: none;
+  font-size: 14px; color: #f4f2ee; text-shadow: 0 1px 3px #000; }
+.stage-badge { position: absolute; top: 8px; right: 10px; z-index: 2; pointer-events: none; display: none;
+  font-size: 12px; font-weight: 700; color: #1c2416; background: #b4c5a0; border-radius: 6px; padding: 2px 8px; }
+.stage.paused .stage-badge { display: block; }
+.stage-note { display: none; position: absolute; inset: 0; z-index: 3; padding: 22px; align-content: center;
+  color: #ddd; font-size: 15px; text-align: center; }
+.stage-note.show { display: grid; }
+.stage-hint { position: absolute; top: 8px; left: 10px; z-index: 2; pointer-events: none; font-size: 11px; color: #8a919c; }
+.vid-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
+.btn.small { padding: 6px 10px; font-size: 14px; }
+.yt-link { margin-left: auto; font-size: 14px; color: #9fd8cc; text-decoration: none; padding: 6px 2px; }
 .btn { border: 0; border-radius: 10px; padding: 10px 14px; background: #3a3a3e; color: #eee; cursor: pointer; touch-action: manipulation; }
 .btn.ghost { background: transparent; border: 1px solid #555; }
 .btn.primary { background: #3db8a0; color: #06231e; font-weight: 700; font-size: 20px; padding: 12px 22px; }
@@ -154,15 +162,8 @@ h1 { font-size: 28px; margin: 0 0 8px; }
 .wheel.press-center .wheel-center { background: linear-gradient(180deg, #e8e6e1 0%, #dcd9d3 100%); }
 .wheel-hint { text-align: center; font-size: 12px; color: #666; margin: 8px 0 0; }
 
-.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.62); z-index: 40;
   align-items: center; justify-content: center; padding: 24px; }
-.modal.show { display: flex; }
-.modal .sheet { background: var(--ipod); color: var(--ink); max-width: 420px; width: 100%;
   border-radius: 16px; padding: 18px; }
-.modal h2 { margin: 0 0 10px; font-size: 22px; }
-.modal p { margin: 0 0 16px; color: #444; }
-.modal .btn { color: #eee; }
-.modal .btn.ghost { color: #222; border-color: #bbb; }
 
 @media (min-width: 860px) {
   .wrap { max-width: 1100px; }
@@ -179,41 +180,32 @@ h1 { font-size: 28px; margin: 0 0 8px; }
       <div class="progress-label" id="progressLabel"></div>
     </div>
 
-    <div id="fileBanner" class="banner">
-      你现在是用本地文件打开本页（file://）。YouTube 内嵌视频在这种情况下常常无法播放（错误 153）。
-      示范视频可以用「在 YouTube 打开示范」按钮另开标签页观看；本页的计时、计数、语音提示仍可照常使用。
-      若希望视频嵌在页面里播放，请在该文件夹运行
-      <code>python3 -m http.server 8000</code>，再用浏览器打开
-      <code>http://localhost:8000/跟练-每日10分钟.html</code>。
-    </div>
-    <div id="apiBanner" class="banner">无法加载 YouTube 播放器脚本。请检查网络，或使用「在 YouTube 打开示范」。</div>
 
     <section id="start" class="start">
       <h1>每日 10 分钟跟练</h1>
-      <p class="sub">第 1 周每日活动：下巴回收、墙壁天使、门框扩胸拉伸、胸椎伸展、猫牛式。示范为已核对的真人教学视频。</p>
+      <p class="sub">第 1 周每日活动：下巴回收、墙壁天使、门框扩胸拉伸、胸椎伸展、猫牛式。示范为点线骨架动画，可随时点「看真人示范」看原视频。</p>
       <button class="btn primary" id="startBtn" type="button">开始跟练</button>
       <div class="how">
         <h2>怎么用（iPod 圆盘）</h2>
-        <p>中间圆钮：暂停 / 继续（计时和视频都会停在原地）。下方「完成一次」：只记当前这一次或这一侧。左边上一动作，右边下一动作（要先确认才跳过）。上方 MENU 打开动作列表；用手指在圆环上转一圈可以滚动列表，再按中间圆钮才会跳转，单转转盘不会跳过动作。</p>
-        <p>请用 Safari 或 Chrome 打开。Obsidian 不能直接播放这个网页。</p>
+        <p>中间圆钮：暂停 / 继续（计时和动画都会停在原地）。下方「完成一次」：只记当前这一次或这一侧。左边上一动作，右边直接跳到下一动作。上方 MENU 打开动作列表；用手指在圆环上转一圈可以滚动列表，再按中间圆钮才会跳转，单转转盘不会跳过动作。示范动画可以左右拖动旋转，「看真人示范」打开原来的 YouTube 视频。</p>
+        <p>请用 Safari 或 Chrome 打开（需要联网加载 three.js）。Obsidian 不能直接运行这个网页。</p>
       </div>
-      <p class="safety">出现手臂发麻、刺痛、疼痛往手臂或腿放射，或锐痛 / 剧痛，请先停止并就医评估。本页为一般性运动指导，不构成诊断或用药建议。示范为已核对的公开 YouTube 视频，不是 AI 生成动作。</p>
+      <p class="safety">出现手臂发麻、刺痛、疼痛往手臂或腿放射，或锐痛 / 剧痛，请先停止并就医评估。本页为一般性运动指导，不构成诊断或用药建议。示范动画是按物理治疗师真人视频编排的点线骨架示意；有疑问时以「看真人示范」里的视频为准。</p>
     </section>
 
     <section id="session" class="session">
       <div class="session-grid">
         <div>
           <div class="card">
-            <div class="video-box">
-              <div id="player"></div>
-              <div id="fallback" class="fallback">
-                <div id="fallbackReason">当前无法内嵌播放示范视频。</div>
-                <a id="fallbackLink" class="btn primary" target="_blank" rel="noopener noreferrer">在 YouTube 打开示范</a>
-              </div>
+            <div class="stage" id="stage" aria-label="动作示范动画（点线骨架模型）">
+              <div class="stage-hint">左右拖动可旋转视角</div>
+              <div class="stage-badge">已暂停</div>
+              <div class="stage-cap" id="stageCap"></div>
+              <div class="stage-note show" id="stageNote">正在加载动作动画…</div>
             </div>
             <div class="vid-actions">
-              <a class="btn ghost" id="openYtBtn" target="_blank" rel="noopener noreferrer">在 YouTube 打开示范</a>
-              <button class="btn ghost" id="muteBtn" type="button">示范静音</button>
+              <button class="btn ghost small" id="viewResetBtn" type="button">推荐视角</button>
+              <a class="yt-link" id="openYtBtn" target="_blank" rel="noopener noreferrer">看真人示范 ↗</a>
             </div>
             <ul class="cues" id="cues"></ul>
           </div>
@@ -253,7 +245,7 @@ h1 { font-size: 28px; margin: 0 0 8px; }
                 </div>
               </div>
             </div>
-            <p class="wheel-hint">中间：暂停 / 继续　下方：记一次　左右：上一项 / 下一项（需确认）　上：菜单</p>
+            <p class="wheel-hint">中间：暂停 / 继续　下方：记一次　左右：上一项 / 下一项　上：菜单</p>
           </div>
         </div>
       </div>
@@ -267,16 +259,6 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     </section>
   </div>
 
-  <div class="modal" id="skipModal" aria-hidden="true">
-    <div class="sheet">
-      <h2>请确认</h2>
-      <p id="skipModalText">确定吗？</p>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn ghost" id="skipCancelBtn" type="button">取消</button>
-        <button class="btn danger" id="skipConfirmBtn" type="button">确定</button>
-      </div>
-    </div>
-  </div>
 
   <script>
     window.ROUTINE = {
@@ -386,7 +368,6 @@ h1 { font-size: 28px; margin: 0 0 8px; }
 };
   </script>
   <script>
-
 (function () {
   const $ = (id) => document.getElementById(id);
   const routine = window.ROUTINE;
@@ -394,11 +375,8 @@ h1 { font-size: 28px; margin: 0 0 8px; }
   let idx = 0, setN = 1, repN = 0, letterIdx = 0, sideIdx = 0;
   let mode = "idle";
   let remaining = 0, ticking = false, lastTs = 0;
-  let player = null, ytReady = false, embedFailed = false, muted = false;
-  let currentClip = null;
   let clock = null;
   let actionLockUntil = 0;
-  let confirmFn = null;
   let menuOpen = false;
   let menuHi = 0;
 
@@ -448,116 +426,10 @@ h1 { font-size: 28px; margin: 0 0 8px; }
   }
   function announce(text) { beep(880, 0.16); speak(text); }
 
-  function isFileOrigin() {
-    return location.protocol === "file:" || location.origin === "null" || location.origin === "file://";
-  }
   function ytWatchUrl(ex) {
     const t = (ex && ex.start) || 0;
     return "https://www.youtube.com/watch?v=" + ex.videoId + (t ? ("&t=" + t + "s") : "");
   }
-  function showFileBanner() {
-    const b = $("fileBanner");
-    if (b && isFileOrigin()) b.classList.add("show");
-  }
-  function showFallback(ex, reason) {
-    embedFailed = true;
-    const box = $("fallback");
-    if (!box) return;
-    box.classList.add("show");
-    $("fallbackReason").textContent = reason || "当前环境无法内嵌播放 YouTube 视频。";
-    if ($("fallbackLink") && ex) $("fallbackLink").href = ytWatchUrl(ex);
-    if ($("openYtBtn") && ex) $("openYtBtn").href = ytWatchUrl(ex);
-  }
-
-  window.onYouTubeIframeAPIReady = function () {
-    ytReady = true;
-    if (mode !== "idle" && currentClip && !player) createPlayer(currentClip);
-  };
-
-  function syncVideoPlay() {
-    if (!player) return;
-    try {
-      if (!ticking || mode !== "work") {
-        if (typeof player.pauseVideo === "function") player.pauseVideo();
-      } else if (typeof player.playVideo === "function") {
-        if (muted && typeof player.mute === "function") player.mute();
-        player.playVideo();
-      }
-    } catch (e) {}
-  }
-  function loopClip(ex) {
-    if (!ticking || mode !== "work") return;
-    if (!player || typeof player.seekTo !== "function") return;
-    try {
-      player.seekTo((ex && ex.start) || 0, true);
-      if (ticking && mode === "work") player.playVideo();
-    } catch (e) {}
-  }
-  function createPlayer(ex) {
-    currentClip = ex;
-    const host = $("player");
-    if (!host || !ex) return;
-    if ($("fallback")) $("fallback").classList.remove("show");
-    embedFailed = false;
-    if ($("openYtBtn")) $("openYtBtn").href = ytWatchUrl(ex);
-    const start = ex.start || 0;
-    const end = ex.end || undefined;
-    if (player && typeof player.loadVideoById === "function") {
-      try {
-        const payload = { videoId: ex.videoId, startSeconds: start };
-        if (end) payload.endSeconds = end;
-        player.loadVideoById(payload);
-        if (muted && typeof player.mute === "function") player.mute();
-        syncVideoPlay();
-        return;
-      } catch (e) {}
-    }
-    const origin = (location.origin && location.origin !== "null") ? location.origin : undefined;
-    const vars = {
-      autoplay: 0, controls: 1, rel: 0, modestbranding: 1, playsinline: 1, disablekb: 1, fs: 1,
-      start: start, mute: muted ? 1 : 0
-    };
-    if (end) vars.end = end;
-    if (origin && origin.indexOf("http") === 0) vars.origin = origin;
-    if (!(window.YT && YT.Player)) {
-      if (isFileOrigin()) showFallback(ex, "用文件方式打开时，YouTube 内嵌播放常常失败。计时仍会继续，可用按钮打开示范。");
-      return;
-    }
-    try {
-      player = new YT.Player("player", {
-        videoId: ex.videoId, width: "100%", height: "100%", playerVars: vars, host: "https://www.youtube.com",
-        events: {
-          onReady: function (e) {
-            try {
-              if (muted) e.target.mute(); else e.target.unMute();
-              e.target.seekTo(start, true);
-              syncVideoPlay();
-            } catch (err) {}
-          },
-          onError: function (e) {
-            const code = e && e.data;
-            const map = { 2: "视频参数无效", 5: "HTML5 播放器错误", 100: "视频不存在或已删除", 101: "该视频不允许嵌入播放", 150: "该视频不允许嵌入播放", 153: "嵌入被拒绝（常见于用文件方式打开页面）" };
-            showFallback(ex, "YouTube 错误 " + code + "：" + (map[code] || "无法内嵌播放") + "。计时会继续，请点按钮在 YouTube 打开示范。");
-          },
-          onStateChange: function (e) {
-            if (window.YT && e.data === YT.PlayerState.ENDED) loopClip(ex);
-          }
-        }
-      });
-    } catch (err) {
-      showFallback(ex, "无法创建播放器。计时会继续，请在新标签打开示范视频。");
-    }
-  }
-  function watchLoop() {
-    try {
-      if (player && currentClip && ticking && mode === "work" && typeof player.getCurrentTime === "function") {
-        const t = player.getCurrentTime();
-        if (currentClip.end && t >= currentClip.end - 0.35) loopClip(currentClip);
-      }
-    } catch (e) {}
-    setTimeout(watchLoop, 500);
-  }
-  watchLoop();
 
   function ex() { return routine.exercises[idx]; }
   function nextEx() { return routine.exercises[idx + 1] || null; }
@@ -568,6 +440,7 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     return item.tempo || 5;
   }
 
+  // 唯一的计时器：动画也从这里读进度，所以暂停时动画同步停住
   function ensureClock() {
     if (clock != null) return;
     lastTs = now();
@@ -608,7 +481,6 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     remaining = workDuration(item);
     if ((item.kind === "reps" || item.kind === "ytw") && repN === 0) repN = 1;
     ensureClock();
-    syncVideoPlay();
     render();
   }
   function startRest(say) {
@@ -617,7 +489,6 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     lastTs = now();
     remaining = restSec;
     ensureClock();
-    syncVideoPlay();
     if (say) announce(say);
     else announce("休息" + restSec + "秒");
     render();
@@ -626,13 +497,6 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     idx = i;
     const item = ex();
     setN = 1; repN = item.kind === "hold" ? 0 : 1; letterIdx = 0; sideIdx = 0;
-    currentClip = item;
-    try {
-      if (ytReady) createPlayer(item);
-      else if (isFileOrigin()) showFallback(item, "用文件方式打开时，YouTube 内嵌播放常常失败。计时仍会继续。");
-    } catch (e) {
-      showFallback(item, "示范视频无法加载，计时会继续。");
-    }
     announce(fromRest ? ("下一个动作，" + item.name + "，开始") : (item.name + "，开始"));
     startWork();
   }
@@ -640,7 +504,6 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     mode = "done"; ticking = false;
     stopClock();
     closeMenu();
-    syncVideoPlay();
     announce("训练完成，做得好");
     $("session").classList.remove("show");
     $("finish").classList.add("show");
@@ -679,37 +542,18 @@ h1 { font-size: 28px; margin: 0 0 8px; }
   function goPrevExercise() {
     if (locked()) return;
     lock(400);
-    hideConfirm();
     if (idx <= 0 && setN === 1 && (repN <= 1)) { beginExercise(0, false); return; }
     if (setN > 1 || repN > 1 || sideIdx > 0 || letterIdx > 0) { beginExercise(idx, false); return; }
     beginExercise(Math.max(0, idx - 1), false);
   }
 
-  function hideConfirm() {
-    confirmFn = null;
-    $("skipModal").classList.remove("show");
-  }
-  function askConfirm(text, fn) {
-    confirmFn = fn;
-    $("skipModalText").textContent = text;
-    $("skipModal").classList.add("show");
-  }
+  // 跳过：不再弹确认，直接执行；带防连击锁，转盘旋转手势永远不会走到这里
   function requestSkip() {
     if (mode === "idle" || mode === "done") return;
-    // Showing the confirm sheet must not be blocked by the complete-unit debounce.
-    const item = ex();
-    const msg = (mode === "rest")
-      ? "确定结束休息，进入下一组？"
-      : ("确定跳过「" + (item && item.name || "当前动作") + "」，进入下一动作？");
-    askConfirm(msg, function () {
-      if (mode === "rest") { announce("休息结束"); startWorkAfterRest(); }
-      else if (mode === "work") { announce("跳过当前动作"); goNextExercise(); }
-    });
-  }
-  function confirmYes() {
-    const fn = confirmFn;
-    hideConfirm();
-    if (fn) { lock(400); fn(); }
+    if (locked()) return;
+    lock(400);
+    if (mode === "rest") { announce("休息结束"); startWorkAfterRest(); }
+    else if (mode === "work") { announce("跳过当前动作"); goNextExercise(); }
   }
   function startWorkAfterRest() {
     const item = ex();
@@ -733,7 +577,6 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     if (paused) {
       try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
     }
-    syncVideoPlay();
     ensureClock();
     render();
   }
@@ -764,15 +607,14 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     clickTick();
     renderMenu();
   }
+  // 菜单：转盘只移动高亮，按中间钮才跳转（不再弹确认）
   function selectMenu() {
     if (!menuOpen) return;
     const target = menuHi;
-    if (target === idx) { closeMenu(); return; }
-    const name = routine.exercises[target].name;
-    askConfirm("确定跳到「" + name + "」重新开始该动作？", function () {
-      closeMenu();
-      beginExercise(target, true);
-    });
+    closeMenu();
+    if (target === idx) return;
+    lock(400);
+    beginExercise(target, true);
   }
 
   function renderTimer() {
@@ -841,18 +683,21 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     if (menuOpen) { icon.textContent = "●"; cap.textContent = "选择"; }
     else if (paused) { icon.textContent = "▶"; cap.textContent = "继续"; }
     else { icon.textContent = "❚❚"; cap.textContent = "暂停"; }
+    $("stage").classList.toggle("paused", paused);
 
     const cues = $("cues");
     cues.innerHTML = "";
     (item && item.cues || []).forEach(c => {
       const li = document.createElement("li"); li.textContent = c; cues.appendChild(li);
     });
-    if ($("openYtBtn") && item) $("openYtBtn").href = ytWatchUrl(item);
-    $("muteBtn").textContent = muted ? "取消静音" : "示范静音";
+    const yt = $("openYtBtn");
+    if (yt && item) {
+      yt.href = ytWatchUrl(item);
+      yt.title = (item.videoTitle || "") + (item.channel ? ("｜" + item.channel) : "");
+    }
   }
 
   function startSession() {
-    hideConfirm();
     closeMenu();
     $("start").classList.remove("show");
     $("finish").classList.remove("show");
@@ -865,11 +710,6 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     announce(routine.welcome);
     beginExercise(0, false);
   }
-  function toggleMute() {
-    muted = !muted;
-    if (player) { try { if (muted) player.mute(); else player.unMute(); } catch (e) {} }
-    render();
-  }
 
   function bindTap(el, fn) {
     if (!el) return;
@@ -877,12 +717,9 @@ h1 { font-size: 28px; margin: 0 0 8px; }
   }
   bindTap($("startBtn"), startSession);
   bindTap($("againBtn"), function () {
-    hideConfirm(); stopClock(); ticking = false; mode = "idle"; closeMenu();
+    stopClock(); ticking = false; mode = "idle"; closeMenu();
     $("finish").classList.remove("show"); $("start").classList.add("show");
   });
-  bindTap($("muteBtn"), toggleMute);
-  bindTap($("skipConfirmBtn"), confirmYes);
-  bindTap($("skipCancelBtn"), hideConfirm);
 
   function wheelGeom(el, ev) {
     const r = el.getBoundingClientRect();
@@ -919,7 +756,9 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     else togglePause();
   }
 
-  // Click-wheel pointer handling: taps vs rotational scroll
+  // Click-wheel pointer handling: taps vs rotational scroll.
+  // 旋转（或手指移动超过阈值）只滚动菜单，抬手时不触发任何按键动作；
+  // pointercancel（系统手势打断）也一律不触发。
   const wheel = $("wheel");
   let g = null;
   function onWheelDown(ev) {
@@ -928,7 +767,8 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     const geo = wheelGeom(wheel, ev);
     g = {
       id: ev.pointerId, last: geo.ang, acc: 0, px: ev.clientX, py: ev.clientY,
-      dist: geo.dist, rad: geo.rad, rotated: false, center: geo.dist <= geo.rad * 0.38
+      dist: geo.dist, rad: geo.rad, rotated: false, center: geo.dist <= geo.rad * 0.38,
+      seg: segFromAng(geo.ang), t0: now()
     };
     try { wheel.setPointerCapture(ev.pointerId); } catch (e) {}
     if (g.center) wheel.classList.add("press-center");
@@ -942,7 +782,7 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     if (d < -Math.PI) d += Math.PI * 2;
     g.last = geo.ang;
     const travel = Math.hypot(ev.clientX - g.px, ev.clientY - g.py);
-    if (g.center) return; // rotation starts on the ring, not the center
+    if (g.center) { if (travel > 16) g.rotated = true; return; } // rotation starts on the ring, not the center
     g.acc += d;
     const step = 18 * Math.PI / 180;
     if (Math.abs(g.acc) >= step || travel > 16) {
@@ -958,10 +798,14 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     const was = g;
     g = null;
     try { wheel.releasePointerCapture(ev.pointerId); } catch (e) {}
+    if (ev.type === "pointercancel") return; // interrupted gesture never acts
     if (was.rotated) return; // rotation never skips / never counts
     const geo = wheelGeom(wheel, ev);
     if (was.center && geo.dist <= was.rad * 0.45) handleCenter();
-    else if (!was.center && geo.dist > was.rad * 0.22 && geo.dist <= was.rad * 1.05) handleSeg(segFromAng(geo.ang));
+    else if (!was.center && geo.dist > was.rad * 0.22 && geo.dist <= was.rad * 1.05) {
+      const seg = segFromAng(geo.ang);
+      if (seg === was.seg) handleSeg(seg); // 按下和抬起须在同一扇区
+    }
   }
   ["pointerdown", "pointermove", "pointerup", "pointercancel"].forEach((type, i) => {
     wheel.addEventListener(type, [onWheelDown, onWheelMove, onWheelUp, onWheelUp][i], { passive: false });
@@ -980,7 +824,6 @@ h1 { font-size: 28px; margin: 0 0 8px; }
       if (e.code === "Space") {
         e.preventDefault();
         if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-        if ($("skipModal").classList.contains("show")) return;
         if (menuOpen) selectMenu();
         else if (mode === "work") completeUnit();
       }
@@ -988,11 +831,10 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     }
     if (e.code === "Space") {
       e.preventDefault();
-      if ($("skipModal").classList.contains("show")) return;
       if (menuOpen) selectMenu();
       else if (mode === "work") completeUnit();
     } else if (e.key === "p" || e.key === "P") { e.preventDefault(); if (!menuOpen) togglePause(); }
-    else if (e.key === "Escape") { hideConfirm(); if (menuOpen) closeMenu(); }
+    else if (e.key === "Escape") { if (menuOpen) closeMenu(); }
   });
   document.addEventListener("visibilitychange", function () {
     lastTs = now();
@@ -1004,19 +846,17 @@ h1 { font-size: 28px; margin: 0 0 8px; }
   });
 
   $("start").classList.add("show");
-  showFileBanner();
-  const tag = document.createElement("script");
-  tag.src = "https://www.youtube.com/iframe_api";
-  tag.onerror = function () { $("apiBanner").classList.add("show"); };
-  document.head.appendChild(tag);
 
   window.__trainer = {
     get: function () {
       const item = ex();
+      const since = (ticking && (mode === "work" || mode === "rest")) ? Math.min(0.25, Math.max(0, (now() - lastTs) / 1000)) : 0;
       return {
-        mode: mode, idx: idx, name: item && item.name, setN: setN, repN: repN,
+        mode: mode, idx: idx, id: item && item.id, name: item && item.name, setN: setN, repN: repN,
         letterIdx: letterIdx, sideIdx: sideIdx, remaining: remaining, ticking: ticking,
-        clockOn: clock != null, embedFailed: embedFailed, menuOpen: menuOpen, menuHi: menuHi
+        workDur: item ? workDuration(item) : 0, sinceTick: since,
+        clockOn: clock != null, menuOpen: menuOpen, menuHi: menuHi,
+        animOk: !!(window.__anim && window.__anim.ok)
       };
     },
     setRemaining: function (s) { remaining = s; renderTimer(); },
@@ -1031,10 +871,7 @@ h1 { font-size: 28px; margin: 0 0 8px; }
       if (mode === "work") advanceAfterWorkUnit();
       else startWorkAfterRest();
     },
-    confirmSkip: function () { confirmFn = function () {
-      if (mode === "rest") { announce("休息结束"); startWorkAfterRest(); }
-      else if (mode === "work") { announce("跳过当前动作"); goNextExercise(); }
-    }; confirmYes(); },
+    confirmSkip: function () { actionLockUntil = 0; requestSkip(); },
     requestSkip: requestSkip,
     start: startSession,
     openMenu: openMenu,
@@ -1046,7 +883,647 @@ h1 { font-size: 28px; margin: 0 0 8px; }
     handleCenter: handleCenter
   };
 })();
+  </script>
+  <script type="module">
+// ===== 点线骨架人体动画（three.js，CDN ES module）=====
+// 读取 window.__trainer.get() 的计时状态逐帧求姿态：计时停，动画就停。
+const CDNS = [
+  "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "https://unpkg.com/three@0.160.0/build/three.module.js"
+];
+const host = document.getElementById("stage");
+const note = document.getElementById("stageNote");
+function fail(msg) {
+  if (note) { note.textContent = msg; note.classList.add("show"); }
+  window.__anim = { ok: false, error: msg };
+}
+let THREE = null;
+for (const u of CDNS) {
+  try { THREE = await import(u); break; } catch (e) {}
+}
+if (!THREE) fail("无法加载 three.js（请检查网络）。计时、计数、语音照常；可点「看真人示范」。");
+else {
+  try { main(THREE); } catch (e) { fail("动画初始化失败：" + (e && e.message || e) + "。计时照常，可点「看真人示范」。"); }
+}
 
+function main(THREE) {
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  const clamp01 = (x) => Math.max(0, Math.min(1, x));
+  const ease = (x) => { x = clamp01(x); return x * x * (3 - 2 * x); };
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const lerpV = (a, b, t) => a.clone().lerp(b, t);
+  // 关键帧时间轴：[[t, value], ...]，t 单调递增，段内 smoothstep
+  function track(keys, t) {
+    if (t <= keys[0][0]) return keys[0][1];
+    for (let i = 1; i < keys.length; i++) {
+      if (t <= keys[i][0]) {
+        const [t0, v0] = keys[i - 1], [t1, v1] = keys[i];
+        return lerp(v0, v1, ease((t - t0) / (t1 - t0 || 1)));
+      }
+    }
+    return keys[keys.length - 1][1];
+  }
+
+  // ---- 身体尺寸（米）----
+  const L = { upper: 0.30, fore: 0.26, hand: 0.08, thigh: 0.44, shin: 0.43, foot: 0.16,
+    shW: 0.19, hipW: 0.10, spine: 0.50, neck: 0.11, head: 0.105 };
+
+  // 两段 IK：根 a、目标 t、长度 l1/l2、pole 方向（肘/膝朝向）→ 中间关节
+  function ik2(a, t, l1, l2, pole) {
+    const d = t.clone().sub(a);
+    let dist = d.length();
+    const maxd = (l1 + l2) * 0.999;
+    if (dist > maxd) { d.setLength(maxd); dist = maxd; t = a.clone().add(d); }
+    dist = Math.max(dist, Math.abs(l1 - l2) + 1e-3);
+    const dir = d.clone().normalize();
+    const x = (l1 * l1 - l2 * l2 + dist * dist) / (2 * dist);
+    const h = Math.sqrt(Math.max(0, l1 * l1 - x * x));
+    const p = pole.clone().sub(dir.clone().multiplyScalar(pole.dot(dir)));
+    if (p.lengthSq() < 1e-8) p.set(0, -1, 0);
+    p.normalize();
+    return { mid: a.clone().add(dir.multiplyScalar(x)).add(p.multiplyScalar(h)), end: t };
+  }
+
+  // 躯干坐标系：o=胸廓顶（两肩中点），up=脊柱朝头，side=身体左侧(+x 方向)，fwd=胸口朝向
+  function torsoFrame(o, up, fwd) {
+    up = up.clone().normalize();
+    fwd = fwd.clone().sub(up.clone().multiplyScalar(fwd.dot(up))).normalize();
+    const side = new THREE.Vector3().crossVectors(up, fwd).normalize();
+    return { o, up, fwd, side };
+  }
+  const at = (F, s, u, f) => F.o.clone().add(F.side.clone().multiplyScalar(s)).add(F.up.clone().multiplyScalar(u)).add(F.fwd.clone().multiplyScalar(f));
+  const inF = (F, s, u, f) => F.side.clone().multiplyScalar(s).add(F.up.clone().multiplyScalar(u)).add(F.fwd.clone().multiplyScalar(f));
+  // 肩胛：r=后缩（向脊柱靠拢）、dn=下沉；返回肩关节和肩胛三角
+  function girdle(F, sgn, r, dn) {
+    const sh = at(F, sgn * (L.shW - 0.03 * r), -0.02 - 0.02 * dn, -0.035 * r);
+    const back = -0.07;
+    const sup = at(F, sgn * (0.085 - 0.03 * r), -0.04 - 0.025 * dn, back - 0.01 * r);
+    const inf = at(F, sgn * (0.075 - 0.03 * r), -0.19 - 0.025 * dn, back - 0.005 * r);
+    const acr = at(F, sgn * (L.shW - 0.035 * r), -0.015 - 0.02 * dn, -0.05 - 0.03 * r);
+    return { sh, scap: [sup, inf, acr] };
+  }
+
+  // 姿态对象：joints 名称 → Vector3；由各动作函数填写
+  function standingBase(P, hipC, side, fwd, upV) {
+    // hipC 骨盆中心；下肢直立
+    const F = { side, fwd, up: upV };
+    P.hipL = hipC.clone().add(side.clone().multiplyScalar(L.hipW));
+    P.hipR = hipC.clone().add(side.clone().multiplyScalar(-L.hipW));
+    for (const k of ["L", "R"]) {
+      const hip = P["hip" + k];
+      const ankle = V(hip.x, 0.08, hip.z);
+      P["knee" + k] = ik2(hip, ankle, L.thigh, L.shin, fwd).mid;
+      P["ankle" + k] = ankle;
+      P["toe" + k] = ankle.clone().add(fwd.clone().multiplyScalar(L.foot)).setY(0.02);
+    }
+    return F;
+  }
+  function headFrom(P, F, neckTilt, headPitch, shift) {
+    // neckTilt：颈相对躯干前倾角（+前伸）；headPitch：头的俯仰（+低头）；shift：头沿 fwd 平移
+    const neckBase = at(F, 0, 0.0, -0.01);
+    const nd = F.up.clone().applyAxisAngle(F.side, neckTilt);
+    let skull = neckBase.clone().add(nd.multiplyScalar(L.neck));
+    if (shift) skull.add(F.fwd.clone().multiplyScalar(shift));
+    const hu = F.up.clone().applyAxisAngle(F.side, headPitch);
+    const hf = F.fwd.clone().applyAxisAngle(F.side, headPitch);
+    P.neck = neckBase; P.skull = skull;
+    P.head = skull.clone().add(hu.clone().multiplyScalar(0.075)).add(hf.clone().multiplyScalar(0.02));
+    P.nose = P.head.clone().add(hf.clone().multiplyScalar(L.head + 0.035)).add(hu.clone().multiplyScalar(-0.01));
+    P.gaze = P.head.clone().add(hf.clone().multiplyScalar(0.55));
+  }
+  function arm(P, k, sh, hand, pole, handDir, thumbDir) {
+    const r = ik2(sh, hand, L.upper, L.fore, pole);
+    P["sh" + k] = sh; P["el" + k] = r.mid; P["wr" + k] = r.end;
+    const hd = handDir || r.end.clone().sub(r.mid).normalize();
+    P["fing" + k] = r.end.clone().add(hd.clone().multiplyScalar(L.hand));
+    if (thumbDir) P["thumb" + k] = r.end.clone().add(hd.clone().multiplyScalar(0.03)).add(thumbDir.clone().normalize().multiplyScalar(0.055));
+  }
+  function hangArms(P, F, r, dn) {
+    for (const [k, s] of [["L", 1], ["R", -1]]) {
+      const g = girdle(F, s, r || 0, dn || 0);
+      P["scap" + k] = g.scap;
+      const hand = g.sh.clone().add(F.up.clone().multiplyScalar(-0.54)).add(F.fwd.clone().multiplyScalar(0.06)).add(F.side.clone().multiplyScalar(s * 0.04));
+      arm(P, k, g.sh, hand, F.fwd.clone().multiplyScalar(-1));
+    }
+  }
+
+  const X = V(1, 0, 0), Y = V(0, 1, 0), Z = V(0, 0, 1);
+
+  // ===== 各动作：pose(state) → {P, band, props-state}；cam 为预设视角 =====
+  // state: { t:0..1 当前这一次的进度, el: 已用秒, dur, side, letter, rest }
+  const EX = {};
+
+  // 1 下巴回收：靠墙站，头整体水平向后平移（眼睛保持平视），不是低头
+  EX.chin = {
+    props: ["wall"], cam: { yaw: 80, pitch: 6, dist: 1.75, target: [0, 1.42, 0] },
+    caption: (s) => s.rest ? "休息" : (s.a > 0.6 ? "停住：下巴水平后收，眼睛平视" : "下巴水平向后收（不是低头）"),
+    pose(s) {
+      const a = s.rest ? 0 : track([[0, 0], [0.22, 1], [0.78, 1], [0.98, 0], [1, 0]], s.t);
+      s.a = a;
+      const P = {};
+      const hipC = V(0, 0.95, 0);
+      standingBase(P, hipC, X, Z, Y);
+      const F = torsoFrame(V(0, 0.95 + L.spine, -0.005), V(0, 1, 0.02), Z);
+      P.pelvis = hipC; P.chest = F.o; P.midback = at(F, 0, -0.25, 0.0);
+      hangArms(P, F, 0, 0);
+      // 前伸头 → 收回：颈从前倾 16° 到约 2°，头部向后平移、头始终水平（只极轻微点头 4°）
+      headFrom(P, F, lerp(0.22, 0.04, a), lerp(0, 0.05, a), lerp(0.02, -0.005, a));
+      P.__arrow = { from: P.nose.clone().add(V(0, 0.09, 0.16)), dir: V(0, 0, -1), len: 0.13, show: a > 0.05 && s.t < 0.8 };
+      return { P };
+    }
+  };
+
+  // 2 墙壁天使：背贴墙，手臂“门柱”位 → 沿墙上滑 → 回来
+  EX.wall = {
+    props: ["wall"], cam: { yaw: 28, pitch: 8, dist: 2.3, target: [0, 1.35, 0] },
+    caption: (s) => s.rest ? "休息" : "前臂和手背贴墙上下滑，肩不耸",
+    pose(s) {
+      const a = s.rest ? 0 : track([[0, 0], [0.45, 1], [0.55, 1], [1, 0]], s.t);
+      const P = {};
+      const hipC = V(0, 0.95, 0);
+      standingBase(P, hipC, X, Z, Y);
+      const F = torsoFrame(V(0, 0.95 + L.spine, 0), Y, Z);
+      P.pelvis = hipC; P.chest = F.o; P.midback = at(F, 0, -0.25, 0);
+      headFrom(P, F, 0.05, 0, -0.01);
+      for (const [k, s2] of [["L", 1], ["R", -1]]) {
+        const g = girdle(F, s2, 0.6, lerp(0.6, 0.2, a));
+        P["scap" + k] = g.scap;
+        const th = lerp(85, 150, a) * Math.PI / 180;       // 上臂外展角（从下垂算起）
+        const ph = lerp(180, 168, a) * Math.PI / 180;      // 前臂绝对角
+        const el = g.sh.clone().add(V(s2 * Math.sin(th), -Math.cos(th), -0.18).normalize().multiplyScalar(L.upper));
+        const wr = el.clone().add(V(s2 * Math.sin(ph), -Math.cos(ph), -0.02).normalize().multiplyScalar(L.fore));
+        P["sh" + k] = g.sh; P["el" + k] = el; P["wr" + k] = wr;
+        P["fing" + k] = wr.clone().add(wr.clone().sub(el).normalize().multiplyScalar(L.hand));
+      }
+      return { P };
+    }
+  };
+
+  // 3 门框扩胸：前臂和手掌贴门框立柱，同侧脚向前一步，身体缓慢前移
+  EX.door = {
+    props: ["door"], cam: { yaw: 18, pitch: 66, dist: 2.5, target: [0.12, 1.2, -0.08] }, mirrorBySide: true,
+    caption: (s) => s.rest ? "休息" : (s.a > 0.7 ? "停住：胸口前侧舒适牵拉" : "身体缓慢前送，挺胸，肩下沉"),
+    pose(s) {
+      // 30 秒：前 3 秒慢慢进入，中间带呼吸微动，最后 2 秒退回
+      const dur = s.dur || 30, el = s.el || 0;
+      let a = s.rest ? 0 : Math.min(ease(el / 3), ease((dur - el) / 2));
+      a *= 1 - (s.rest ? 0 : 0.06 * (0.5 + 0.5 * Math.sin(el * 2 * Math.PI / 5)));
+      s.a = a;
+      const sg = 1; // 以左侧建模，右侧整体镜像
+      const P = {};
+      const shift = lerp(0, 0.2, a);
+      const z0 = -0.2;
+      const hipC = V(0, 0.95, z0 - 0.02 + shift * 0.75);
+      standingBase(P, hipC, X, Z, Y);
+      // 同侧（左）脚向前一步
+      const step = V(0, 0, 0.32);
+      P.ankleL = P.ankleL.clone().add(step); P.toeL = P.toeL.clone().add(step);
+      P.ankleR = P.ankleR.clone().add(V(0, 0, -0.08)); P.toeR = P.toeR.clone().add(V(0, 0, -0.08));
+      for (const k of ["L", "R"]) P["knee" + k] = ik2(P["hip" + k], P["ankle" + k], L.thigh, L.shin, Z).mid;
+      const F = torsoFrame(V(0, 0.95 + L.spine - 0.01, z0 + shift), V(0, 1, 0.04 + 0.04 * a), Z);
+      P.pelvis = hipC; P.chest = F.o; P.midback = at(F, 0, -0.25, 0);
+      headFrom(P, F, 0.06, 0, 0);
+      // 拉伸侧：肘与肩同高，前臂竖直贴在门框（门框平面 z=0）
+      const g = girdle(F, sg, 0.5 * a, 0.5);
+      P.scapL = g.scap;
+      const fz = -0.13; // 门框立柱朝人的那一面
+      const dz = g.sh.z - fz, ex = g.sh.x + Math.sqrt(Math.max(0.01, L.upper * L.upper - dz * dz));
+      const elb = V(ex, g.sh.y - 0.01, fz), wr = V(ex, g.sh.y - 0.01 + L.fore, fz);
+      P.shL = g.sh; P.elL = elb; P.wrL = wr; P.fingL = wr.clone().add(V(0, L.hand, 0));
+      // 另一只手自然下垂
+      const g2 = girdle(F, -1, 0, 0.3);
+      P.scapR = g2.scap;
+      arm(P, "R", g2.sh, g2.sh.clone().add(V(-0.04, -0.54, 0.06)), V(0, 0, -1));
+      return { P };
+    }
+  };
+
+  // 4 胸椎伸展：坐椅子，双手托后脑，以椅背顶为支点上背后仰，腰不塌
+  EX.thoracic = {
+    props: ["chair"], cam: { yaw: 82, pitch: 8, dist: 2.2, target: [0, 0.95, -0.05] },
+    caption: (s) => s.rest ? "休息" : (s.a > 0.6 ? "呼气，胸口向上打开（停 3–5 秒）" : "支点在上背，头由双手托住"),
+    pose(s) {
+      const cyc = 6, el = s.el || 0, tt = (el % cyc) / cyc;
+      const a = s.rest ? 0 : track([[0, 0], [0.35, 1], [0.7, 1], [1, 0]], tt);
+      s.a = a;
+      const P = {};
+      const seatY = 0.47;
+      const hipC = V(0, seatY + 0.08, -0.1);
+      P.pelvis = hipC;
+      P.hipL = hipC.clone().add(V(L.hipW, 0, 0)); P.hipR = hipC.clone().add(V(-L.hipW, 0, 0));
+      for (const k of ["L", "R"]) {
+        const hip = P["hip" + k];
+        const ankle = V(hip.x, 0.08, hip.z + 0.44);
+        P["knee" + k] = ik2(hip, ankle, L.thigh, L.shin, V(0, 1, 0.3)).mid;
+        P["ankle" + k] = ankle; P["toe" + k] = ankle.clone().add(V(0, -0.06, L.foot));
+      }
+      // 脊柱三段：腰段几乎不动，胸段绕椅背支点后仰
+      const lum = hipC.clone().add(V(0, 0.22, 0.0).applyAxisAngle(X, lerp(0, -0.04, a)));
+      const tlow = lum.clone().add(V(0, 0.14, 0.01).applyAxisAngle(X, lerp(0.05, -0.28, a)));
+      const tup = tlow.clone().add(V(0, 0.14, 0.03).applyAxisAngle(X, lerp(0.1, -0.55, a)));
+      P.lum = lum; P.midback = tlow; P.chest = tup;
+      const upv = tup.clone().sub(tlow).normalize();
+      const F = torsoFrame(tup, upv, V(0, 0, 1));
+      headFrom(P, F, 0.08, 0.0, 0);
+      for (const [k, s2] of [["L", 1], ["R", -1]]) {
+        const g = girdle(F, s2, 0.2, 0.2);
+        P["scap" + k] = g.scap;
+        const hand = P.skull.clone().add(F.side.clone().multiplyScalar(s2 * 0.05)).add(F.fwd.clone().multiplyScalar(-0.09)).add(F.up.clone().multiplyScalar(0.06));
+        arm(P, k, g.sh, hand, F.fwd.clone().add(F.side.clone().multiplyScalar(s2 * 0.6)).add(F.up.clone().multiplyScalar(0.4)), F.side.clone().multiplyScalar(-s2));
+      }
+      return { P };
+    }
+  };
+
+  // 5 猫牛式：四点跪，手腕在肩下、膝在髋下；一次 = 猫（拱背低头）+ 牛（塌腰抬头）
+  EX.catcow = {
+    props: ["floor"], cam: { yaw: 90, pitch: 10, dist: 2.2, target: [0, 0.5, 0.25] },
+    caption: (s) => s.rest ? "休息" : (s.c > 0.3 ? "猫式：呼气，背向上拱" : s.c < -0.3 ? "牛式：吸气，胸口前送" : "随呼吸缓慢屈伸"),
+    pose(s) {
+      const c = s.rest ? 0 : Math.sin(2 * Math.PI * (s.t || 0)); // +1 猫，-1 牛
+      s.c = c;
+      const P = {};
+      const hipC = V(0, 0.50 + 0.015 * c, 0);
+      const shC = V(0, 0.61, 0.50);
+      P.pelvis = hipC;
+      P.hipL = hipC.clone().add(V(L.hipW, 0, 0)); P.hipR = hipC.clone().add(V(-L.hipW, 0, 0));
+      for (const k of ["L", "R"]) {
+        const hip = P["hip" + k];
+        const knee = V(hip.x, 0.06, 0.02);
+        P["knee" + k] = knee;
+        P["ankle" + k] = V(hip.x, 0.06, knee.z - L.shin);
+        P["toe" + k] = V(hip.x, 0.02, knee.z - L.shin - 0.1);
+      }
+      // 脊柱二次贝塞尔：控制点上下偏移
+      const ctrl = hipC.clone().lerp(shC, 0.5).add(V(0, 0.105 * c, 0));
+      const bz = (u) => hipC.clone().multiplyScalar((1 - u) * (1 - u)).add(ctrl.clone().multiplyScalar(2 * u * (1 - u))).add(shC.clone().multiplyScalar(u * u));
+      P.lum = bz(0.3); P.midback = bz(0.6); P.chest = shC;
+      const tang = shC.clone().sub(bz(0.85)).normalize();
+      const F = torsoFrame(shC, tang, V(0, -1, 0));
+      // 头跟随胸椎：猫式轻低头，牛式轻抬头
+      const nb = F.o.clone();
+      const ndir = F.up.clone().applyAxisAngle(X, 0.35 * c + 0.05);
+      P.neck = nb; P.skull = nb.clone().add(ndir.clone().multiplyScalar(L.neck));
+      const hf = V(0, -1, 0).applyAxisAngle(X, 0.35 * c - 0.1);
+      P.head = P.skull.clone().add(ndir.clone().multiplyScalar(0.075));
+      P.nose = P.head.clone().add(hf.clone().multiplyScalar(L.head + 0.03));
+      P.gaze = null;
+      for (const [k, s2] of [["L", 1], ["R", -1]]) {
+        const g = girdle(F, s2, 0.1, 0.4);
+        P["scap" + k] = g.scap;
+        const hand = V(s2 * L.shW, 0.06, 0.51);
+        arm(P, k, g.sh, hand, V(0, 0, -1), V(0, 0, 1));
+      }
+      return { P };
+    }
+  };
+
+  // 6 坐姿划船：坐地上膝微屈，弹力带绕脚底，肘贴身后拉、夹肩胛
+  EX.row = {
+    props: ["floor"], cam: { yaw: 112, pitch: 20, dist: 2.3, target: [0, 0.42, 0.35] },
+    caption: (s) => s.rest ? "休息" : (s.a > 0.85 ? "停 1 秒：夹紧肩胛" : "先沉肩，肘贴身体往后拉"),
+    pose(s) {
+      const a = s.rest ? 0 : track([[0, 0], [0.3, 1], [0.5, 1], [1, 0]], s.t);
+      s.a = a;
+      const P = {};
+      const hipC = V(0, 0.1, 0);
+      P.pelvis = hipC;
+      P.hipL = hipC.clone().add(V(L.hipW, 0, 0)); P.hipR = hipC.clone().add(V(-L.hipW, 0, 0));
+      for (const k of ["L", "R"]) {
+        const hip = P["hip" + k];
+        const ankle = V(hip.x * 1.1, 0.07, hip.z + 0.83);
+        P["knee" + k] = ik2(hip, ankle, L.thigh, L.shin, Y).mid;
+        P["ankle" + k] = ankle; P["toe" + k] = ankle.clone().add(V(0, 0.13, 0.06));
+      }
+      const F = torsoFrame(hipC.clone().add(V(0, L.spine, 0.02)), V(0, 1, 0.04), Z);
+      P.chest = F.o; P.midback = at(F, 0, -0.25, 0);
+      headFrom(P, F, 0.06, 0, 0);
+      for (const [k, s2] of [["L", 1], ["R", -1]]) {
+        const g = girdle(F, s2, a, 0.6);
+        P["scap" + k] = g.scap;
+        const reach = at(F, s2 * 0.15, -0.2, 0.52);
+        const pull = at(F, s2 * 0.2, -0.33, 0.06);
+        const hand = lerpV(reach, pull, a);
+        arm(P, k, g.sh, hand, V(s2 * 0.25, -1, -0.8), V(0, -0.2, 1).normalize());
+      }
+      // 弹力带：手 → 脚底 → 另一只手
+      const footL = P.ankleL.clone().add(V(0, 0.06, 0.05)), footR = P.ankleR.clone().add(V(0, 0.06, 0.05));
+      return { P, band: [P.wrL, footL, footR, P.wrR] };
+    }
+  };
+
+  // 7 面拉：弹力带固定在脸的高度，肘抬至肩高向两侧打开，拉向脸两侧
+  EX.face = {
+    props: ["post"], cam: { yaw: 140, pitch: 28, dist: 2.5, target: [0, 1.35, 0.35] },
+    caption: (s) => s.rest ? "休息" : (s.a > 0.85 ? "停住：肩胛后夹，肩不耸" : "肘抬到肩高，拉向脸两侧"),
+    pose(s) {
+      const a = s.rest ? 0 : track([[0, 0], [0.3, 1], [0.5, 1], [1, 0]], s.t);
+      s.a = a;
+      const P = {};
+      const hipC = V(0, 0.95, 0);
+      standingBase(P, hipC, X, Z, Y);
+      const F = torsoFrame(V(0, 0.95 + L.spine, 0), Y, Z);
+      P.pelvis = hipC; P.chest = F.o; P.midback = at(F, 0, -0.25, 0);
+      headFrom(P, F, 0.05, 0, -0.005);
+      for (const [k, s2] of [["L", 1], ["R", -1]]) {
+        const g = girdle(F, s2, a, 0.5);
+        P["scap" + k] = g.scap;
+        const reach = V(s2 * 0.07, 1.48, 0.54);
+        const pull = V(s2 * 0.21, 1.62, 0.1);
+        const hand = lerpV(reach, pull, a);
+        const pole = lerpV(V(s2 * 0.3, -1, 0), V(s2, -0.15, -0.2), a);
+        arm(P, k, g.sh, hand, pole, lerpV(V(0, 0, 1), V(0, 1, 0.3), a).normalize());
+      }
+      const anchor = V(0, 1.6, 1.25);
+      return { P, band: [P.wrL, anchor, P.wrR] };
+    }
+  };
+
+  // 8 水平拉开：胸前肩高握带、肘微屈，向两侧水平拉开到 T
+  EX.pull = {
+    props: ["floor"], cam: { yaw: 25, pitch: 52, dist: 2.4, target: [0, 1.25, 0.15] },
+    caption: (s) => s.rest ? "休息" : (s.a > 0.85 ? "停 1–2 秒：肩胛向中间靠拢" : "水平向两侧拉开，沉肩"),
+    pose(s) {
+      const a = s.rest ? 0 : track([[0, 0], [0.32, 1], [0.52, 1], [1, 0]], s.t);
+      s.a = a;
+      const P = {};
+      const hipC = V(0, 0.95, 0);
+      standingBase(P, hipC, X, Z, Y);
+      const F = torsoFrame(V(0, 0.95 + L.spine, 0), Y, Z);
+      P.pelvis = hipC; P.chest = F.o; P.midback = at(F, 0, -0.25, 0);
+      headFrom(P, F, 0.05, 0, -0.005);
+      for (const [k, s2] of [["L", 1], ["R", -1]]) {
+        const g = girdle(F, s2, a, 0.5);
+        P["scap" + k] = g.scap;
+        const ang = lerp(14, 84, a) * Math.PI / 180; // 水平外展
+        const hand = g.sh.clone().add(V(s2 * Math.sin(ang), -0.08, Math.cos(ang)).normalize().multiplyScalar(0.54));
+        arm(P, k, g.sh, hand, V(0, -1, 0), V(s2 * Math.sin(ang), 0, Math.cos(ang)), V(0, 1, 0));
+      }
+      return { P, band: [P.wrL, P.wrR] };
+    }
+  };
+
+  // 9 俯卧 Y-T-W：趴地，额头垫毛巾（不抬头），大拇指朝上，肩胛后缩下沉带动手臂抬离地面
+  EX.ytw = {
+    props: ["floor", "towel"], cam: { yaw: 180 + 22, pitch: 58, dist: 3.0, target: [0, 0.1, 0.3] },
+    caption: (s) => s.rest ? "休息" : (s.a > 0.85 ? "停 1–2 秒：肩胛往后、往下收" : (["Y", "T", "W"][s.letter] || "Y") + " 字：从肩胛带动，手臂抬离地面"),
+    pose(s) {
+      const a = s.rest ? 0 : track([[0, 0], [0.3, 1], [0.6, 1], [1, 0]], s.t);
+      s.a = a;
+      const letter = s.letter || 0;
+      const P = {};
+      // 俯卧：头朝 +z，胸口朝下（fwd = -y），身体左侧仍为 +x
+      const y0 = 0.11;
+      const hipC = V(0, y0, 0);
+      P.pelvis = hipC;
+      P.hipL = hipC.clone().add(V(L.hipW, 0, 0)); P.hipR = hipC.clone().add(V(-L.hipW, 0, 0));
+      for (const k of ["L", "R"]) {
+        const hip = P["hip" + k];
+        P["knee" + k] = V(hip.x * 1.1, 0.07, -L.thigh);
+        P["ankle" + k] = V(hip.x * 1.2, 0.07, -L.thigh - L.shin);
+        P["toe" + k] = V(hip.x * 1.2, 0.02, -L.thigh - L.shin - 0.12);
+      }
+      const shC = V(0, y0 + 0.03, L.spine);
+      const F = torsoFrame(shC, V(0, 0.03, 1), V(0, -1, 0));
+      P.chest = shC; P.midback = V(0, y0 + 0.04, 0.25); P.lum = V(0, y0 + 0.02, 0.12);
+      // 头：额头在毛巾上，颈中立
+      P.neck = shC.clone(); P.skull = shC.clone().add(V(0, 0.0, L.neck));
+      P.head = P.skull.clone().add(V(0, -0.01, 0.075));
+      P.nose = P.head.clone().add(V(0, -(L.head + 0.03), 0.02));
+      P.gaze = null;
+      const lift = lerp(0, 0.30, a); // 抬离地面的角度（弧度）
+      for (const [k, s2] of [["L", 1], ["R", -1]]) {
+        const g = girdle(F, s2, a, a);
+        P["scap" + k] = g.scap;
+        const sh = g.sh;
+        let up, fo;
+        if (letter === 0) { // Y：约 135° 外展，伸直过头
+          const d = V(s2 * 0.6, -0.12, 0.8).normalize();
+          up = d.clone(); fo = d.clone();
+        } else if (letter === 1) { // T：90°
+          const d = V(s2, -0.12, 0.02).normalize();
+          up = d.clone(); fo = d.clone();
+        } else { // W：肘弯，上臂斜向脚侧，前臂指向头侧
+          up = V(s2 * 0.75, -0.15, -0.5).normalize();
+          fo = V(s2 * 0.45, -0.05, 0.9).normalize();
+        }
+        // 整条手臂绕肩、以垂直于手臂方向的水平轴抬起（朝天花板）
+        const mean = up.clone().add(fo).setY(0).normalize();
+        const axis = new THREE.Vector3().crossVectors(mean, Y).normalize();
+        const rot = (v) => v.clone().applyAxisAngle(axis, lift);
+        up = rot(up); fo = rot(fo);
+        const el = sh.clone().add(up.multiplyScalar(L.upper));
+        const wr = el.clone().add(fo.clone().multiplyScalar(L.fore));
+        P["sh" + k] = sh; P["el" + k] = el; P["wr" + k] = wr;
+        P["fing" + k] = wr.clone().add(fo.clone().multiplyScalar(L.hand));
+        P["thumb" + k] = wr.clone().add(fo.clone().multiplyScalar(0.03)).add(V(0, 0.06, 0)); // 大拇指朝上
+      }
+      return { P };
+    }
+  };
+
+  // ===== three.js 场景 =====
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "low-power" });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setClearColor(0x15171c, 1);
+  host.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, 4 / 3, 0.05, 50);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x334455, 1.6));
+  const dl = new THREE.DirectionalLight(0xffffff, 1.2); dl.position.set(2, 4, 3); scene.add(dl);
+
+  const grid = new THREE.GridHelper(4, 16, 0x3a4250, 0x262b33);
+  scene.add(grid);
+
+  const mat = (c, o) => new THREE.MeshLambertMaterial({ color: c, transparent: o != null, opacity: o == null ? 1 : o });
+  const boneMat = mat(0xe8e6e1), jointMat = mat(0x3db8a0), headMat = mat(0xe8e6e1, 0.92), noseMat = mat(0xf0b34a);
+  const scapMat = new THREE.MeshBasicMaterial({ color: 0x5ec8ff, transparent: true, opacity: 0.55, side: THREE.DoubleSide, depthWrite: false });
+  const bandMat = mat(0xff6a3d);
+  const propMat = mat(0x6b7280, 0.35), propSolid = mat(0x7a6a58, 0.9);
+  const cyl = new THREE.CylinderGeometry(1, 1, 1, 8, 1);
+  const sph = new THREE.SphereGeometry(1, 12, 8);
+
+  function Seg(m, r) { const me = new THREE.Mesh(cyl, m); me.userData.r = r; scene.add(me); return me; }
+  const up0 = V(0, 1, 0), tmpQ = new THREE.Quaternion();
+  function place(me, a, b) {
+    if (!a || !b) { me.visible = false; return; }
+    const d = b.clone().sub(a); const len = d.length();
+    if (len < 1e-5) { me.visible = false; return; }
+    me.visible = true;
+    me.position.copy(a).add(b).multiplyScalar(0.5);
+    me.scale.set(me.userData.r, len, me.userData.r);
+    me.quaternion.setFromUnitVectors(up0, d.divideScalar(len));
+  }
+  function Dot(m, r) { const me = new THREE.Mesh(sph, m); me.scale.setScalar(r); scene.add(me); return me; }
+
+  const BONES = [
+    ["hipL", "hipR"], ["pelvis", "lum"], ["lum", "midback"], ["midback", "chest"], ["pelvis", "midback", "noLum"],
+    ["shL", "shR"], ["chest", "neck"], ["neck", "skull"],
+    ["shL", "elL"], ["elL", "wrL"], ["wrL", "fingL"], ["wrL", "thumbL", "thin"],
+    ["shR", "elR"], ["elR", "wrR"], ["wrR", "fingR"], ["wrR", "thumbR", "thin"],
+    ["hipL", "kneeL"], ["kneeL", "ankleL"], ["ankleL", "toeL"],
+    ["hipR", "kneeR"], ["kneeR", "ankleR"], ["ankleR", "toeR"]
+  ];
+  const boneMeshes = BONES.map(b => Seg(boneMat, b[2] === "thin" ? 0.008 : 0.014));
+  const JOINTS = ["hipL", "hipR", "kneeL", "kneeR", "ankleL", "ankleR", "shL", "shR", "elL", "elR", "wrL", "wrR", "pelvis", "chest", "midback", "lum", "neck"];
+  const jointMeshes = JOINTS.map(() => Dot(jointMat, 0.024));
+  const headMesh = Dot(headMat, L.head);
+  const noseMesh = Dot(noseMat, 0.022);
+  const gazeMesh = Seg(new THREE.MeshBasicMaterial({ color: 0xf0b34a, transparent: true, opacity: 0.5 }), 0.004);
+  // 肩胛三角
+  function Tri() {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(9), 3));
+    const me = new THREE.Mesh(g, scapMat); me.renderOrder = 2; scene.add(me); return me;
+  }
+  const scapMeshes = { L: Tri(), R: Tri() };
+  const bandMeshes = [Seg(bandMat, 0.008), Seg(bandMat, 0.008), Seg(bandMat, 0.008)];
+  const arrow = new THREE.ArrowHelper(V(0, 0, -1), V(0, 0, 0), 0.1, 0xf0b34a, 0.04, 0.03); scene.add(arrow);
+
+  // 道具
+  const props = {};
+  function box(w, h, d, x, y, z, m) { const me = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m || propMat); me.position.set(x, y, z); return me; }
+  props.wall = new THREE.Group(); props.wall.add(box(1.6, 2.1, 0.04, 0, 1.05, -0.13));
+  props.door = new THREE.Group();
+  props.door.add(box(0.5, 2.1, 0.08, 0.66, 1.05, -0.09), box(0.5, 2.1, 0.08, -0.66, 1.05, -0.09), box(1.82, 0.3, 0.08, 0, 2.25, -0.09));
+  props.chair = new THREE.Group();
+  props.chair.add(box(0.44, 0.04, 0.4, 0, 0.45, -0.05, propSolid), box(0.44, 0.06, 0.04, 0, 0.83, -0.23, propSolid));
+  for (const [x, z] of [[-0.2, 0.13], [0.2, 0.13], [-0.2, -0.23], [0.2, -0.23]]) props.chair.add(box(0.03, 0.45, 0.03, x, 0.225, z, propSolid));
+  for (const x of [-0.2, 0.2]) props.chair.add(box(0.03, 0.38, 0.03, x, 0.64, -0.23, propSolid));
+  props.floor = new THREE.Group();
+  props.towel = new THREE.Group(); props.towel.add(box(0.22, 0.04, 0.16, 0, 0.02, L.spine + 0.2, mat(0x8fa3b8, 0.8)));
+  props.post = new THREE.Group(); props.post.add(box(0.06, 2.0, 0.06, 0, 1.0, 1.28));
+  for (const k in props) { props[k].visible = false; scene.add(props[k]); }
+
+  // ===== 视角：预设 + 拖动旋转 =====
+  const view = { yaw: 0, pitch: 10, dist: 2.3, target: V(0, 1, 0), userYaw: 0, userPitch: 0 };
+  let curKey = "", dirty = true;
+  function applyCam() {
+    const yaw = (view.yaw + view.userYaw) * Math.PI / 180;
+    const pitch = Math.max(-10, Math.min(85, view.pitch + view.userPitch)) * Math.PI / 180;
+    const t = view.target;
+    camera.position.set(t.x + view.dist * Math.cos(pitch) * Math.sin(yaw), t.y + view.dist * Math.sin(pitch), t.z + view.dist * Math.cos(pitch) * Math.cos(yaw));
+    camera.lookAt(t);
+  }
+  let drag = null;
+  const cv = renderer.domElement;
+  cv.style.touchAction = "pan-y"; // 竖向仍可滚动页面，横向拖动旋转
+  cv.addEventListener("pointerdown", (e) => { drag = { id: e.pointerId, x: e.clientX, y: e.clientY }; try { cv.setPointerCapture(e.pointerId); } catch (er) {} });
+  cv.addEventListener("pointermove", (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY;
+    view.userYaw -= dx * 0.5;
+    if (e.pointerType === "mouse") view.userPitch += dy * 0.3;
+    dirty = true;
+  });
+  const endDrag = () => { drag = null; };
+  cv.addEventListener("pointerup", endDrag); cv.addEventListener("pointercancel", endDrag);
+  const resetBtn = document.getElementById("viewResetBtn");
+  if (resetBtn) resetBtn.addEventListener("click", (e) => { e.preventDefault(); view.userYaw = 0; view.userPitch = 0; dirty = true; });
+  const viewBtns = document.querySelectorAll("[data-view]");
+  viewBtns.forEach(b => b.addEventListener("click", (e) => {
+    e.preventDefault();
+    const v = b.getAttribute("data-view");
+    const base = view.yaw;
+    const want = v === "side" ? 90 : v === "front" ? 0 : 180;
+    view.userYaw = want - base; view.userPitch = (v === "back" ? 15 : 5) - view.pitch; dirty = true;
+  }));
+
+  function resize() {
+    const w = host.clientWidth, h = host.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix(); dirty = true;
+  }
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(host);
+  window.addEventListener("resize", resize);
+
+  const capEl = document.getElementById("stageCap");
+  let lastCap = "";
+
+  function setPose(def, res, mirror) {
+    let P = res.P;
+    const m = (v) => v ? (mirror ? V(-v.x, v.y, v.z) : v) : null;
+    if (mirror) { // 左右镜像：交换 L/R 名称
+      const Q = {};
+      for (const k in P) {
+        let nk = k;
+        if (/L$/.test(k)) nk = k.slice(0, -1) + "R"; else if (/R$/.test(k)) nk = k.slice(0, -1) + "L";
+        Q[nk] = P[k];
+      }
+      res = { P: Q, band: res.band };
+    }
+    P = res.P;
+    const g = (k) => {
+      const v = P[k];
+      if (!v || Array.isArray(v) || !(v.isVector3)) return null;
+      return m(v);
+    };
+    BONES.forEach((b, i) => {
+      let a = g(b[0]), c = g(b[1]);
+      if (b[2] === "noLum") { if (P.lum) { boneMeshes[i].visible = false; return; } }
+      if (b[0] === "pelvis" && b[1] === "lum" && !P.lum) { boneMeshes[i].visible = false; return; }
+      if (b[0] === "lum" && !P.lum) { boneMeshes[i].visible = false; return; }
+      place(boneMeshes[i], a, c);
+    });
+    JOINTS.forEach((k, i) => { const v = g(k); jointMeshes[i].visible = !!v; if (v) jointMeshes[i].position.copy(v); });
+    const hd = g("head"); headMesh.visible = !!hd; if (hd) headMesh.position.copy(hd);
+    const ns = g("nose"); noseMesh.visible = !!ns; if (ns) noseMesh.position.copy(ns);
+    place(gazeMesh, ns, g("gaze"));
+    for (const k of ["L", "R"]) {
+      const tri = P["scap" + k], me = scapMeshes[k];
+      if (!tri) { me.visible = false; continue; }
+      me.visible = true;
+      const arr = me.geometry.attributes.position.array;
+      tri.forEach((p, j) => { const q = m(p); arr[j * 3] = q.x; arr[j * 3 + 1] = q.y; arr[j * 3 + 2] = q.z; });
+      me.geometry.attributes.position.needsUpdate = true;
+      me.geometry.computeBoundingSphere();
+    }
+    const band = res.band || [];
+    bandMeshes.forEach((me, i) => place(me, band[i] ? m(band[i]) : null, band[i + 1] ? m(band[i + 1]) : null));
+    const ar = P.__arrow;
+    if (ar && ar.show) { arrow.visible = true; arrow.position.copy(m(ar.from)); arrow.setDirection(ar.dir); arrow.setLength(ar.len, 0.035, 0.03); }
+    else arrow.visible = false;
+  }
+
+  function frame() {
+    requestAnimationFrame(frame);
+    const T = window.__trainer;
+    if (!T || !host.offsetParent) return;
+    const st = T.get();
+    const def = EX[st.id];
+    if (!def) return;
+    const mirror = !!(def.mirrorBySide && st.sideIdx === 1);
+    const key = st.id + "|" + (mirror ? 1 : 0);
+    if (key !== curKey) {
+      curKey = key;
+      const c = def.cam;
+      view.yaw = mirror ? -c.yaw : c.yaw; view.pitch = c.pitch; view.dist = c.dist;
+      view.target.set(mirror ? -c.target[0] : c.target[0], c.target[1], c.target[2]);
+      view.userYaw = 0; view.userPitch = 0;
+      for (const k in props) props[k].visible = def.props.indexOf(k) >= 0;
+      dirty = true;
+    }
+    const rest = st.mode !== "work";
+    const dur = st.workDur || 5;
+    const el = Math.max(0, Math.min(dur, dur - (st.remaining - (st.sinceTick || 0))));
+    const s = { t: el / dur, el, dur, side: st.sideIdx, letter: st.letterIdx, rest };
+    const sig = [key, st.mode, st.letterIdx, el.toFixed(3)].join("|");
+    if (!dirty && sig === frame.sig) return; // 暂停 / 休息且没有拖动时不重绘
+    frame.sig = sig; dirty = false;
+    const res = def.pose(s);
+    setPose(def, res, mirror);
+    const cap = def.caption ? def.caption(s) : "";
+    if (capEl && cap !== lastCap) { capEl.textContent = cap; lastCap = cap; }
+    applyCam();
+    renderer.render(scene, camera);
+    window.__anim.frames++;
+  }
+  window.__anim = { ok: true, frames: 0, EX, poseOf: (id, s) => EX[id].pose(s) };
+  if (note) note.classList.remove("show");
+  resize();
+  requestAnimationFrame(frame);
+}
   </script>
 </body>
 </html>
